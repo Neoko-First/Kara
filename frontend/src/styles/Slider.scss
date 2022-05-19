@@ -1,29 +1,85 @@
 .sliderContainer {
-  height: 86vh;
+  height: 100%;
   width: 100%;
-  background-color: #1a1a1a;
+  background: rgb(19, 11, 32);
+  background: linear-gradient(
+    180deg,
+    rgba(19, 11, 32, 1) 0%,
+    rgba(13, 10, 19, 1) 100%
+  );
   position: relative;
+  z-index: 5;
   .numberOfPic {
     width: 100%;
     display: flex;
     padding-top: 5px;
     position: absolute;
     div {
-      background-color: white;
+      background-color: rgba(255, 255, 255, 0.6);
       width: 100%;
       height: 3px;
       margin: 0 2px 0 2px;
       border-radius: 20px;
+      &:nth-child(1) {
+        background-color: white;
+      }
     }
   }
   .slider {
     display: flex;
     height: 100%;
     overflow: hidden;
+    position: relative;
     img {
       height: 100%;
       width: 100%;
-      object-fit: contain;
+      object-fit: cover;
+    }
+    .infoCar {
+      width: 100%;
+      padding: 15px 0 15px 15px;
+      .titleCar {
+        display: flex;
+        button {
+          background-color: transparent;
+          border: none;
+          outline: none;
+          color: white;
+          margin-left: 10px;
+        }
+      }
+      position: absolute;
+      color: white;
+      bottom: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .actionOnCar {
+      position: absolute;
+      height: 70px;
+      width: 100%;
+      bottom: 0;
+      box-shadow: 0px -5px 3px black;
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      button {
+        background-color: transparent;
+        border: 2px solid;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        outline: none;
+        font-size: 2rem;
+        &:nth-child(1) {
+          color: #ff4e68;
+        }
+        &:nth-child(2) {
+          color: #1feab5;
+        }
+      }
     }
   }
 }

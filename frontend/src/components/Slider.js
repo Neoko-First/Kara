@@ -15,6 +15,25 @@ const Slider = () => {
         <img src={car} alt="car" />
         <img src={car} alt="car" />
         <img src={car} alt="car" />
+        <div className="infoCar">
+          <div className="titleCar">
+            <h2>Honda CRX Del Sol</h2>
+            <button>
+              <i class="fas fa-info-circle"></i>
+            </button>
+          </div>
+          <p>1997</p>
+          <p>120 cv</p>
+          <p>5 cv fiscaux</p>
+        </div>
+        <div className="actionOnCar">
+          <button>
+            <i class="fas fa-times"></i>
+          </button>
+          <button>
+            <i class="fas fa-heart"></i>
+          </button>
+        </div>
       </div>
     </div>
   );

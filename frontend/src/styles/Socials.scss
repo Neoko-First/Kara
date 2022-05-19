@@ -1,0 +1,95 @@
+.socialContainer {
+  background-color: #1b1b1b;
+  color: white;
+  width: 100%;
+  height: 100%;
+  .matchsContainer {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: hidden;
+    padding: 10px 0 0 10px;
+    p {
+      margin-bottom: 15px;
+    }
+    ul {
+      padding-left: 10px;
+      width: 100%;
+      overflow: scroll;
+      display: flex;
+      li {
+        width: 80px;
+        margin-right: 13px;
+        list-style: none;
+        img {
+          width: 100%;
+          height: 110px;
+          object-fit: cover;
+          border-radius: 5px;
+        }
+        p {
+          width: 100%;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+  .messagesContainer {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 0 0 10px;
+    p {
+      margin-bottom: 15px;
+    }
+    ul {
+      width: 100%;
+      padding-left: 10px;
+      li {
+        display: flex;
+        height: 70px;
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        align-items: center;
+        img {
+          width: 60px;
+          height: 60px;
+          object-fit: cover;
+          border-radius: 50%;
+        }
+        .infoMessage {
+          width: 80%;
+          height: 100%;
+          border-bottom: 1px solid rgb(45, 45, 45);
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: center;
+          padding-right: 10px;
+          p {
+            width: 100%;
+            text-align: start;
+            margin: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            &:nth-child(1) {
+              margin-bottom: 5px;
+            }
+            &:nth-child(2) {
+              color: rgb(141, 141, 141);
+            }
+          }
+        }
+      }
+    }
+  }
+}

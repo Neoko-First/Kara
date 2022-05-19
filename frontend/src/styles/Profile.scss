@@ -1,0 +1,22 @@
+.profileContainer {
+  color: white;
+  padding-top: 20px;
+  .primaryInfo {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    img {
+      height: 180px;
+      width: 180px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    p {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 20px;
+    }
+  }
+}

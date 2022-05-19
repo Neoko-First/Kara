@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import "../styles/Header.scss";
 import logo from "../assets/moi.jpg";
 
@@ -7,9 +8,11 @@ const Header = () => {
   return (
     <header>
       <div className="profilPictureHeader">
-        <div>
-          <img src={logo} alt="Logo" />
-        </div>
+        <NavLink exact="true" to="/Profile">
+          <div>
+            <img src={logo} alt="Logo" />
+          </div>
+        </NavLink>
       </div>
       <div className="logoHeader">
         <p>Kara</p>
