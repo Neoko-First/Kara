@@ -1,0 +1,82 @@
+.authContainer {
+  color: white;
+  padding-bottom: 60px;
+  .loginContainer {
+    padding: 20px;
+    form {
+      padding: 10px 10px 0 10px;
+      color: white;
+      div {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+        label {
+          color: #9f9f9f;
+          margin-bottom: 5px;
+          span {
+            color: rgb(166, 0, 255);
+          }
+        }
+        input,
+        select {
+          padding: 5px 10px;
+          background-color: #393939;
+          border: none;
+          outline: none;
+          color: white;
+          border-radius: 5px;
+        }
+      }
+      button {
+        border: none;
+        background-color: rgb(166, 0, 255);
+        color: white;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .accessToLoginOrSignUp {
+        span {
+          color: rgb(166, 0, 255);
+
+        }
+      }
+    }
+  }
+  .signupContainer {
+    padding: 20px;
+    form {
+      padding: 10px 10px 0 10px;
+      color: white;
+      div {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+        label {
+          color: #9f9f9f;
+          margin-bottom: 5px;
+          span {
+            color: rgb(166, 0, 255);
+          }
+        }
+        input,
+        select {
+          padding: 5px 10px;
+          background-color: #393939;
+          border: none;
+          outline: none;
+          color: white;
+          border-radius: 5px;
+        }
+      }
+      button {
+        border: none;
+        background-color: rgb(166, 0, 255);
+        color: white;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 5px;
+      }
+    }
+  }
+}

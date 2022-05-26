@@ -10,7 +10,7 @@ const PrimaryInfo = () => {
       <NavLink exact="true" to="/Settings">
         <div className="settingCall">
           <button>
-            <i class="fas fa-cog"></i>
+            <i className="fas fa-cog"></i>
           </button>
         </div>
       </NavLink>

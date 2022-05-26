@@ -8,32 +8,32 @@ const PicturesManager = () => {
       <span>Ne montrez pas votre plaque d'immatriculation</span>
       <div className="picturesManager">
         <div className="pictureCard">
-          <img src={require("../../assets/del_sol.jpg")} alt="car" />
+          <img src={require("../../assets/del_sol1.jpg")} alt="car" />
         </div>
         <div className="pictureCard">
-          <img src={require("../../assets/del_sol.jpg")} alt="car" />
+          <img src={require("../../assets/del_sol2.jpg")} alt="car" />
         </div>
         <div className="pictureCard">
-          <img src={require("../../assets/del_sol.jpg")} alt="car" />
-          <i class="fas fa-times-circle"></i>
+          <img src={require("../../assets/del_sol3.jpg")} alt="car" />
+          <i className="fas fa-times-circle"></i>
         </div>
         <div className="pictureCard">
-          <img src={require("../../assets/del_sol.jpg")} alt="car" />
+          <i className="fas fa-plus-circle"></i>
         </div>
         <div className="pictureCard">
-          <i class="fas fa-plus-circle"></i>
+          <i className="fas fa-plus-circle"></i>
         </div>
         <div className="pictureCard">
-          <i class="fas fa-plus-circle"></i>
+          <i className="fas fa-plus-circle"></i>
         </div>
         <div className="pictureCard">
-          <i class="fas fa-plus-circle"></i>
+          <i className="fas fa-plus-circle"></i>
         </div>
         <div className="pictureCard">
-          <i class="fas fa-plus-circle"></i>
+          <i className="fas fa-plus-circle"></i>
         </div>
         <div className="pictureCard">
-          <i class="fas fa-plus-circle"></i>
+          <i className="fas fa-plus-circle"></i>
         </div>
       </div>
     </div>

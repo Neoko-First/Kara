@@ -100,13 +100,16 @@
           border-radius: 5px;
         }
       }
-      button {
-        border: none;
-        background-color: rgb(166, 0, 255);
-        color: white;
-        font-weight: bold;
-        padding: 10px;
-        border-radius: 5px;
+      .buttonMoreInfo {
+        p {
+          border: none;
+          background-color: rgb(166, 0, 255);
+          color: white;
+          font-weight: bold;
+          padding: 10px;
+          border-radius: 5px;
+          text-align: center;
+        }
       }
     }
   }

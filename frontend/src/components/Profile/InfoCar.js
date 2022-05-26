@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 
 // navigation : association d'url avec l'affichage front de pages différentes
 const InfoCar = () => {
+  const [moreInfo, setMoreInfo] = useState(false);
+
   return (
     <div className="infoCarContainer">
       <p>Informations véhicule</p>
@@ -43,40 +45,46 @@ const InfoCar = () => {
           <input type="number"></input>
         </div>
         <div className="buttonMoreInfo">
-          <button>Informations supplémentaires</button>
+          <p onClick={() => setMoreInfo(!moreInfo)}>
+            Informations supplémentaires
+          </p>
         </div>
-        <div>
-          <label>Carburant</label>
-          <select>
-            <option>Essence</option>
-            <option>Ethanol</option>
-            <option>Diesel</option>
-            <option>Hybride</option>
-            <option>Électrique</option>
-            <option>GPL</option>
-            <option>Hyrdogène</option>
-          </select>
-        </div>
-        <div>
-          <label>Boîte de vitesse</label>
-          <select>
-            <option>Manuelle</option>
-            <option>Automatique</option>
-            <option>Séquentielle</option>
-          </select>
-        </div>
-        <div>
-          <label>Nombre de portes</label>
-          <input type="number"></input>
-        </div>
-        <div>
-          <label>Nombre de places</label>
-          <input type="number"></input>
-        </div>
-        <div>
-          <label>Couleur</label>
-          <input type="text"></input>
-        </div>
+        {moreInfo && (
+          <>
+            <div>
+              <label>Carburant</label>
+              <select>
+                <option>Essence</option>
+                <option>Ethanol</option>
+                <option>Diesel</option>
+                <option>Hybride</option>
+                <option>Électrique</option>
+                <option>GPL</option>
+                <option>Hyrdogène</option>
+              </select>
+            </div>
+            <div>
+              <label>Boîte de vitesse</label>
+              <select>
+                <option>Manuelle</option>
+                <option>Automatique</option>
+                <option>Séquentielle</option>
+              </select>
+            </div>
+            <div>
+              <label>Nombre de portes</label>
+              <input type="number"></input>
+            </div>
+            <div>
+              <label>Nombre de places</label>
+              <input type="number"></input>
+            </div>
+            <div>
+              <label>Couleur</label>
+              <input type="text"></input>
+            </div>
+          </>
+        )}
       </form>
     </div>
   );

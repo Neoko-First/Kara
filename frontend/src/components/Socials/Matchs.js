@@ -8,35 +8,35 @@ const Matchs = () => {
       <ul>
         <li>
           <img
-            src={require("../../assets/del_sol.jpg")}
+            src={require("../../assets/s15.jpg")}
             alt="car"
           />
           <p>Honda CRX Del Sol</p>
         </li>
         <li>
           <img
-            src={require("../../assets/del_sol.jpg")}
+            src={require("../../assets/s15.jpg")}
             alt="car"
           />
           <p>Honda CRX Del Sol</p>
         </li>
         <li>
           <img
-            src={require("../../assets/del_sol.jpg")}
+            src={require("../../assets/s15.jpg")}
             alt="car"
           />
           <p>Honda CRX Del Sol</p>
         </li>
         <li>
           <img
-            src={require("../../assets/del_sol.jpg")}
+            src={require("../../assets/s15.jpg")}
             alt="car"
           />
           <p>Honda CRX Del Sol</p>
         </li>
         <li>
           <img
-            src={require("../../assets/del_sol.jpg")}
+            src={require("../../assets/s15.jpg")}
             alt="car"
           />
           <p>Honda CRX Del Sol</p>

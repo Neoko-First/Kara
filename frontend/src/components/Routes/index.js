@@ -4,6 +4,7 @@ import Home from "../../pages/Home";
 import Profile from "../../pages/Profile";
 import Socials from "../../pages/Socials";
 import Settings from "../../pages/Settings";
+import Auth from "../../pages/Auth";
 
 // navigation : association d'url avec l'affichage front de pages différentes
 const index = () => {
@@ -14,6 +15,7 @@ const index = () => {
         <Route path="/Socials" element={<Socials />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="/Settings" element={<Settings />} />
+        <Route path="/Auth" element={<Auth />} />
       </Routes>
     </Router>
   );

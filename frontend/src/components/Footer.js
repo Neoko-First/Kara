@@ -8,12 +8,12 @@ const Footer = () => {
     <footer>
       <NavLink exact="true" to="/">
         <button>
-          <i class="fas fa-car"></i>
+          <i className="fas fa-car"></i>
         </button>
       </NavLink>
       <NavLink exact="true" to="/Socials">
         <button>
-          <i class="fas fa-comments"></i>
+          <i className="fas fa-comments"></i>
         </button>
       </NavLink>
     </footer>

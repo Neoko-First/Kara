@@ -4,7 +4,10 @@ import React from "react";
 const Version = () => {
   return (
     <div className="versionContainer">
-      <p>Kara</p>
+      <div>
+        <img src={require("../../assets/logo-kara.png")} alt="car" />
+        <p>Kara</p>
+      </div>
       <span>Version 0.1</span>
     </div>
   );

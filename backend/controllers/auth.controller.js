@@ -1,21 +1,20 @@
 const UserModel = require("../models/user.model");
 
 // controlleur d'inscription d'un utilisateur
-exports.signup = async (req, res, next) => {
+module.exports.signup = async (req, res) => {
   const { pseudo, email, password } = req.body;
 
   try {
     const user = await UserModel.create({ pseudo, email, password });
     res.status(201).json({ user: user._id });
   } catch (err) {
-    res.status(200).json({
-      err,
-    });
+    console.log(err);
+    res.status(200).send({ err });
   }
 };
 
 // controlleur de connexion d'un utilisateur
-exports.login = async (req, res, next) => {};
+exports.login = async (req, res, next) => {}; 
 
 // controlleur de déconnexion d'un utilisateur
 exports.logout = async (req, res, next) => {};

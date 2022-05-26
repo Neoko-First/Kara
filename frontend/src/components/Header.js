@@ -10,11 +10,12 @@ const Header = () => {
       <div className="profilPictureHeader">
         <NavLink exact="true" to="/Profile">
           <div>
-            <img src={logo} alt="Logo" />
+            <img src={require("../assets/moi.jpg")} alt="car" />
           </div>
         </NavLink>
       </div>
       <div className="logoHeader">
+        <img src={require("../assets/logo-kara.png")} alt="car" />
         <p>Kara</p>
       </div>
       <div className="nothingForMoment"></div>
