@@ -4,4 +4,5 @@ Stack : MongoDB, Express, React, Nodejs. Featuring JWT, Mongoose, Multer, Bcrypt
 Pour essayer l'app :<br>
 lancer le frontend => cd frontend => npm start <br>
 lancer le backend => cd backend => npm start <br>
-![logo-kara](https://user-images.githubusercontent.com/68705187/170010177-daa22cbf-2431-45bc-9720-c7ce3e435406.png)
+![logo-kara-192](https://user-images.githubusercontent.com/68705187/170531400-200fbd11-34f1-4543-8405-621a1002f83d.png)
+
