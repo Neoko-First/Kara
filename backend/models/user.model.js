@@ -31,30 +31,30 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "noPp.png",
     },
-    // carprimary: {
-    //   type: [
-    //     {
-    //       brand: String,
-    //       model: String,
-    //       date: String,
-    //       kilometer: Number,
-    //       cvdin: Number,
-    //       cvfisc: Number,
-    //     },
-    //   ],
-    //   required: true,
-    // },
-    // carsecondary: {
-    //   type: [
-    //     {
-    //       energy: String,
-    //       gearbox: String,
-    //       door: Number,
-    //       places: Number,
-    //       color: String,
-    //     },
-    //   ],
-    // },
+    carprimary: {
+      type: [
+        {
+          brand: String,
+          model: String,
+          date: String,
+          kilometer: Number,
+          cvdin: Number,
+          cvfisc: Number,
+        },
+      ],
+      required: true,
+    },
+    carsecondary: {
+      type: [
+        {
+          energy: String,
+          gearbox: String,
+          door: Number,
+          places: Number,
+          color: String,
+        },
+      ],
+    },
     matchs: {
       type: [String],
     },

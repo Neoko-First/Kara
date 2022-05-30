@@ -1,0 +1,16 @@
+.loadingScreen {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  z-index: 15;
+  background-color: #141414;
+  .loader {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+      width: 50%;
+    }
+  }
+}
