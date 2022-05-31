@@ -1,37 +1,64 @@
 import React, { useState } from "react";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from "react-responsive-carousel";
 import "../styles/Slider.scss";
 
 // navigation : association d'url avec l'affichage front de pages différentes
 const Slider = () => {
-  const [countPic, setCountPic] = useState(1);
+  const [countPic, setCountPic] = useState(0);
 
   const slideLeft = () => {
     if (countPic > 1) {
       setCountPic(countPic - 1);
     }
     console.log(countPic);
+    var sliderBox = document
+      .getElementById("sliderBox")
+      .getElementsByTagName("li");
+
+    for (const element of sliderBox) {
+      element.style.transform = "translate3d(-" + countPic + "00%, 0px, 0px)";
+    }
   };
 
   const slideRight = () => {
     if (countPic < 3) {
       setCountPic(countPic + 1);
+      console.log(countPic);
+      var sliderBox = document
+        .getElementById("sliderBox")
+        .getElementsByTagName("li");
+
+      for (const element of sliderBox) {
+        element.style.transform = "translate3d(-" + countPic + "00%, 0px, 0px)";
+      }
     }
-    console.log(countPic);
   };
 
   return (
     <div className="sliderContainer">
       <div className="slider">
-        <div className="numberOfPic">
+        {/* <div className="numberOfPic">
           <div></div>
           <div></div>
           <div></div>
-        </div>
-        <div className="sliderControl">
+        </div> */}
+        {/* <div className="sliderControl">
           <div className="slideLeft" onClick={slideLeft}></div>
           <div className="slideRight" onClick={slideRight}></div>
-        </div>
-        <ul id="sliderBox">
+        </div> */}
+        <Carousel>
+          <div>
+            <img src={require("../assets/del_sol1.jpg")} alt="car" />{" "}
+          </div>
+          <div>
+            <img src={require("../assets/del_sol2.jpg")} alt="car" />{" "}
+          </div>
+          <div>
+            <img src={require("../assets/del_sol3.jpg")} alt="car" />{" "}
+          </div>
+        </Carousel>
+        {/* <ul id="sliderBox">
           <li>
             <img src={require("../assets/del_sol1.jpg")} alt="car" />
           </li>
@@ -41,7 +68,7 @@ const Slider = () => {
           <li>
             <img src={require("../assets/del_sol3.jpg")} alt="car" />
           </li>
-        </ul>
+        </ul> */}
         <div className="infoCar">
           <div className="titleCar">
             <h2>Honda CRX Del Sol</h2>
