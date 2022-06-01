@@ -1,43 +1,47 @@
-import React, { useState } from "react";
+import React from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import "../styles/Slider.scss";
 
 // navigation : association d'url avec l'affichage front de pages différentes
 const Slider = () => {
-  const [countPic, setCountPic] = useState(0);
+  // const [countPic, setCountPic] = useState(0);
 
-  const slideLeft = () => {
-    if (countPic > 1) {
-      setCountPic(countPic - 1);
-    }
-    console.log(countPic);
-    var sliderBox = document
-      .getElementById("sliderBox")
-      .getElementsByTagName("li");
-
-    for (const element of sliderBox) {
-      element.style.transform = "translate3d(-" + countPic + "00%, 0px, 0px)";
-    }
+  const handleUnlike = () => {
+    // document.getElementById("slider").style.transform = "rotate(-20deg)";
   };
 
-  const slideRight = () => {
-    if (countPic < 3) {
-      setCountPic(countPic + 1);
-      console.log(countPic);
-      var sliderBox = document
-        .getElementById("sliderBox")
-        .getElementsByTagName("li");
+  // const slideLeft = () => {
+  //   if (countPic > 1) {
+  //     setCountPic(countPic - 1);
+  //   }
+  //   console.log(countPic);
+  //   var sliderBox = document
+  //     .getElementById("sliderBox")
+  //     .getElementsByTagName("li");
 
-      for (const element of sliderBox) {
-        element.style.transform = "translate3d(-" + countPic + "00%, 0px, 0px)";
-      }
-    }
-  };
+  //   for (const element of sliderBox) {
+  //     element.style.transform = "translate3d(-" + countPic + "00%, 0px, 0px)";
+  //   }
+  // };
+
+  // const slideRight = () => {
+  //   if (countPic < 3) {
+  //     setCountPic(countPic + 1);
+  //     console.log(countPic);
+  //     var sliderBox = document
+  //       .getElementById("sliderBox")
+  //       .getElementsByTagName("li");
+
+  //     for (const element of sliderBox) {
+  //       element.style.transform = "translate3d(-" + countPic + "00%, 0px, 0px)";
+  //     }
+  //   }
+  // };
 
   return (
     <div className="sliderContainer">
-      <div className="slider">
+      <div className="slider" id="slider">
         {/* <div className="numberOfPic">
           <div></div>
           <div></div>
@@ -47,7 +51,7 @@ const Slider = () => {
           <div className="slideLeft" onClick={slideLeft}></div>
           <div className="slideRight" onClick={slideRight}></div>
         </div> */}
-        <Carousel>
+        <Carousel transitionTime="150">
           <div>
             <img src={require("../assets/del_sol1.jpg")} alt="car" />{" "}
           </div>
@@ -82,7 +86,7 @@ const Slider = () => {
         </div>
       </div>
       <div className="actionOnCar">
-        <button>
+        <button onClick={handleUnlike}>
           <i className="fas fa-times"></i>
         </button>
         <button>

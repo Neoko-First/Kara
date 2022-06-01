@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema(
     carprimary: {
       type: [
         {
+          img1: String,
           brand: String,
           model: String,
           date: String,
@@ -47,6 +48,12 @@ const userSchema = new mongoose.Schema(
     carsecondary: {
       type: [
         {
+          img2: String,
+          img3: String,
+          img4: String,
+          img5: String,
+          img6: String,
+          location: String,
           energy: String,
           gearbox: String,
           door: Number,

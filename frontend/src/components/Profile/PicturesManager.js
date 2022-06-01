@@ -26,15 +26,6 @@ const PicturesManager = () => {
         <div className="pictureCard">
           <i className="fas fa-plus-circle"></i>
         </div>
-        <div className="pictureCard">
-          <i className="fas fa-plus-circle"></i>
-        </div>
-        <div className="pictureCard">
-          <i className="fas fa-plus-circle"></i>
-        </div>
-        <div className="pictureCard">
-          <i className="fas fa-plus-circle"></i>
-        </div>
       </div>
     </div>
   );
