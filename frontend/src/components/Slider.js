@@ -51,7 +51,7 @@ const Slider = () => {
           <div className="slideLeft" onClick={slideLeft}></div>
           <div className="slideRight" onClick={slideRight}></div>
         </div> */}
-        <Carousel transitionTime="150">
+        <Carousel transitionTime="150" infiniteLoop="true">
           <div>
             <img src={require("../assets/del_sol1.jpg")} alt="car" />{" "}
           </div>

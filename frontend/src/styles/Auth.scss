@@ -2,7 +2,7 @@
   color: white;
   padding-bottom: 60px;
   .loginContainer {
-    padding: 20px;
+    padding: 20px 20px 10px 20px;
     form {
       padding: 10px 10px 0 10px;
       color: white;
@@ -27,19 +27,13 @@
           border-radius: 5px;
         }
       }
-      button {
+      input[type="submit"] {
         border: none;
         background-color: rgb(166, 0, 255);
         color: white;
         font-weight: bold;
         padding: 10px;
         border-radius: 5px;
-      }
-      .accessToLoginOrSignUp {
-        span {
-          color: rgb(166, 0, 255);
-
-        }
       }
     }
   }
@@ -77,6 +71,12 @@
         padding: 10px;
         border-radius: 5px;
       }
+    }
+  }
+  .accessToLoginOrSignUp {
+    padding-left: 20px;
+    span {
+      color: rgb(166, 0, 255);
     }
   }
 }

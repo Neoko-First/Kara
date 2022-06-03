@@ -8,7 +8,20 @@ const Panel = () => {
   const [showSignUp, setShowSignUp] = useState(false);
 
   return (
-    <div className="authContainer">{!showSignUp ? <Login /> : <Signup />}</div>
+    <div className="authContainer">
+      {!showSignUp ? <Login /> : <Signup />}
+      <div className="accessToLoginOrSignUp">
+        {!showSignUp ? (
+          <p onClick={() => setShowSignUp(true)}>
+            Pas encore membre ? <span>Créer un compte</span>
+          </p>
+        ) : (
+          <p onClick={() => setShowSignUp(false)}>
+            Déjà membre ? <span>Se connecter</span>
+          </p>
+        )}
+      </div>{" "}
+    </div>
   );
 };
 

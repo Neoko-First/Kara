@@ -5,7 +5,7 @@ const carController = require("../controllers/car.controller");
 
 router.post("/signup", authController.signup);
 router.post("/login", authController.login);
-router.post("/logout", authController.logout);
+router.get("/logout", authController.logout);
 
 // user DB
 router.get("/", userController.getAllUsers);
@@ -17,5 +17,6 @@ router.patch("/like/:id", userController.like);
 // Car infos
 router.patch("/carPrimary/:id", carController.addCarPrimaryInfos);
 router.patch("/carSecondary/:id", carController.addCarSecondaryInfos);
+router.patch("/carPics/:id", carController.manageCarPics);
 
 module.exports = router;

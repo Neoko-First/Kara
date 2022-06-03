@@ -1,4 +1,15 @@
 const UserModel = require("../models/user.model");
+const jwt = require("jsonwebtoken");
+
+// durée de vie token et cookie contenant le token
+const maxAge = 3 * 24 * 60 * 60 * 1000;
+
+// crée un token unique
+const createToken = (id) => {
+  return jwt.sign({ id }, process.env.TOKEN_SECRET, {
+    expiresIn: maxAge,
+  });
+};
 
 // controlleur d'inscription d'un utilisateur
 module.exports.signup = async (req, res) => {
@@ -14,19 +25,23 @@ module.exports.signup = async (req, res) => {
 };
 
 // controlleur de connexion d'un utilisateur
-exports.login = async (req, res, next) => {}; 
+module.exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await UserModel.login(email, password);
+    // crée un token unique
+    const token = createToken(user._id);
+    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge });
+    res.status(200).json({ user: user._id });
+  } catch (err) {
+    console.log(err);
+    res.status(200).send({ err });
+  }
+};
 
 // controlleur de déconnexion d'un utilisateur
-exports.logout = async (req, res, next) => {};
-
-// controller de récupération de tout les users
-exports.getAllUsers = async (req, res, next) => {};
-
-// controller de récupération d'un user
-exports.getOneUser = async (req, res, next) => {};
-
-// controller de modification d'un user
-exports.updateUser = async (req, res, next) => {};
-
-// controller de désactivation d'un user
-exports.disableUser = async (req, res, next) => {};
+module.exports.logout = async (req, res) => {
+  res.cookie("jwt", "", { maxAge: 1 });
+  res.redirect("/");
+};

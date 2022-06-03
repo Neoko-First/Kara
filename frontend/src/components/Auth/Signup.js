@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 // navigation : association d'url avec l'affichage front de pages différentes
 const Signup = () => {
+
+
   return (
     <div className="signupContainer">
       <p>Inscription</p>

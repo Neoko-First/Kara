@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 
 // navigation : association d'url avec l'affichage front de pages différentes
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = (e) => {};
+
   return (
     <div className="loginContainer">
       <p>Connexion</p>
-      <form>
+      <form action="" onSubmit={handleLogin}>
         <div>
           <label>
             Email <span>*</span>
@@ -19,12 +24,7 @@ const Login = () => {
           <input type="password"></input>
         </div>
         <div>
-          <button>Se connecter</button>
-        </div>
-        <div className="accessToLoginOrSignUp">
-          <p>
-            Pas encore membre ? <span>Créer un compte</span>
-          </p>
+          <input type="submit" value="Se connecter"></input>
         </div>
       </form>
     </div>
