@@ -3,9 +3,13 @@ const express = require("express");
 
 // ajout de body parser
 const bodyParser = require("body-parser");
+// ajout de cookie parser
+const cookieParser = require("cookie-parser");
 
 // importe les routes
 const userRoutes = require("./routes/user.routes");
+
+const { checkUser, requireAuth } = require("./middleware/auth.middleware");
 
 // crée une app express
 const app = express();
@@ -28,9 +32,18 @@ app.use((req, res, next) => {
   next();
 });
 
-// traite la data qui transite
+// lire le corps des requêtes
 app.use(bodyParser.json());
+// lire le contenu des url
 app.use(bodyParser.urlencoded({ extended: true }));
+// lire les cookies
+app.use(cookieParser());
+
+// jwt
+app.get("*", checkUser); //verif à chaque page si user connecté
+app.get("/jwtid", requireAuth, (req, res) => {
+  res.status(200).send(res.locals.user._id);
+}); //verif si infos user dispo en cookie pour reconnecter automatiquement
 
 // routes
 app.use("/api/user", userRoutes);
