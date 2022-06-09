@@ -35,6 +35,10 @@
         padding: 10px;
         border-radius: 5px;
       }
+      .emailError,
+      .passwordError {
+        color: red;
+      }
     }
   }
   .signupContainer {
