@@ -7,42 +7,42 @@ const Messages = () => {
       <p>Messages</p>
       <ul>
         <li>
-          <img src={require("../../assets/moi.jpg")} alt="car" />
+          <img src={require("../../assets/profil/moi.jpg")} alt="car" />
           <div className="infoMessage">
             <p>Toyota MR2</p>
             <p>Salut, ta caisse est vraiment belle ! Tu es de quel coin ?</p>
           </div>
         </li>
         <li>
-          <img src={require("../../assets/moi.jpg")} alt="car" />
+          <img src={require("../../assets/profil/moi.jpg")} alt="car" />
           <div className="infoMessage">
             <p>Toyota MR2</p>
             <p>Salut, ta caisse est vraiment belle ! Tu es de quel coin ?</p>
           </div>
         </li>
         <li>
-          <img src={require("../../assets/moi.jpg")} alt="car" />
+          <img src={require("../../assets/profil/moi.jpg")} alt="car" />
           <div className="infoMessage">
             <p>Toyota MR2</p>
             <p>Salut, ta caisse est vraiment belle ! Tu es de quel coin ?</p>
           </div>
         </li>
         <li>
-          <img src={require("../../assets/moi.jpg")} alt="car" />
+          <img src={require("../../assets/profil/moi.jpg")} alt="car" />
           <div className="infoMessage">
             <p>Toyota MR2</p>
             <p>Salut, ta caisse est vraiment belle ! Tu es de quel coin ?</p>
           </div>
         </li>
         <li>
-          <img src={require("../../assets/moi.jpg")} alt="car" />
+          <img src={require("../../assets/profil/moi.jpg")} alt="car" />
           <div className="infoMessage">
             <p>Toyota MR2</p>
             <p>Salut, ta caisse est vraiment belle ! Tu es de quel coin ?</p>
           </div>
         </li>
         <li>
-          <img src={require("../../assets/moi.jpg")} alt="car" />
+          <img src={require("../../assets/profil/moi.jpg")} alt="car" />
           <div className="infoMessage">
             <p>Toyota MR2</p>
             <p>Salut, ta caisse est vraiment belle ! Tu es de quel coin ?</p>

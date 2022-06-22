@@ -76,6 +76,12 @@
         border-radius: 5px;
       }
     }
+    .pseudoError,
+    .emailError,
+    .passwordError,
+    .passwordConfError {
+      color: red;
+    }
   }
   .accessToLoginOrSignUp {
     padding-left: 20px;

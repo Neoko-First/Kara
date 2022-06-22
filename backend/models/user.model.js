@@ -27,45 +27,29 @@ const userSchema = new mongoose.Schema(
       max: 1024,
       minlength: 6,
     },
-    picture: {
-      type: String,
-      default: "noPp.png",
-    },
     carPics: {
-      type: [
-        {
-          img1: String,
-          img2: String,
-          img3: String,
-          img4: String,
-          img5: String,
-          img6: String,
-        },
-      ],
+      img1: String,
+      img2: String,
+      img3: String,
+      img4: String,
+      img5: String,
+      img6: String,
     },
     carprimary: {
-      type: [
-        {
-          brand: String,
-          model: String,
-          date: String,
-          kilometer: Number,
-          cvdin: Number,
-          cvfisc: Number,
-        },
-      ],
+      brand: String,
+      model: String,
+      date: String,
+      kilometer: Number,
+      cvdin: Number,
+      cvfisc: Number,
     },
     carsecondary: {
-      type: [
-        {
-          location: String,
-          energy: String,
-          gearbox: String,
-          door: Number,
-          places: Number,
-          color: String,
-        },
-      ],
+      location: String,
+      energy: String,
+      gearbox: String,
+      door: Number,
+      places: Number,
+      color: String,
     },
     matchs: {
       type: [String],

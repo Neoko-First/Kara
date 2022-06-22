@@ -15,8 +15,8 @@ router.delete("/:id", userController.deleteUser);
 router.patch("/like/:id", userController.like);
 
 // Car infos
-router.patch("/carPrimary/:id", carController.addCarPrimaryInfos);
-router.patch("/carSecondary/:id", carController.addCarSecondaryInfos);
-router.patch("/carPics/:id", carController.manageCarPics);
+router.put("/carPrimary/:id", carController.addCarPrimaryInfos);
+router.put("/carSecondary/:id", carController.addCarSecondaryInfos);
+router.put("/carPics/:id", carController.manageCarPics);
 
 module.exports = router;

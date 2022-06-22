@@ -17,7 +17,13 @@
     p {
       margin-top: 10px;
       text-align: center;
+    }
+    .carTypeInfo {
       font-size: 20px;
+    }
+    .userNameLabel {
+      font-size: 17px;
+      color: rgb(177, 177, 177);
     }
     .settingCall {
       position: absolute;
@@ -48,29 +54,53 @@
     .picturesManager {
       margin-top: 10px;
       width: 100%;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-gap: 10px;
-      grid-auto-rows: 140px;
-      .pictureCard {
-        border-radius: 5px;
-        background-color: #393939;
-        outline: 2px dashed #5d5d5d;
-        position: relative;
-        img {
-          object-fit: cover;
-          width: 100%;
-          height: 100%;
+      .picturesManagerGrid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 10px;
+        grid-auto-rows: 140px;
+        margin-bottom: 10px;
+        .pictureCard {
           border-radius: 5px;
+          background-color: #393939;
+          outline: 2px dashed #5d5d5d;
+          position: relative;
+          img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            position: absolute;
+            pointer-events: none;
+          }
+          input[type="file"] {
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+          }
+          i {
+            position: absolute;
+            bottom: 50%;
+            right: 50%;
+            z-index: 10;
+            font-size: 1.5rem;
+            transform: translate(50%, 50%);
+            pointer-events: none;
+            color: #c9c9c9;
+          }
         }
-        i {
-          position: absolute;
-          bottom: 50%;
-          right: 50%;
-          font-size: 1.5rem;
-          transform: translate(50%, 50%);
-          color: #c9c9c9;
-        }
+      }
+      input[type="submit"] {
+        background-color: rgb(166, 0, 255);
+        color: white;
+        border: 0;
+        outline: 0;
+        width: 100%;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
       }
     }
   }

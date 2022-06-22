@@ -10,7 +10,7 @@ module.exports.addCarPrimaryInfos = async (req, res) => {
     await UserModel.findOneAndUpdate(
       { _id: req.params.id },
       {
-        $push: {
+        $set: {
           carprimary: {
             brand: req.body.brand,
             model: req.body.model,
@@ -39,7 +39,7 @@ module.exports.addCarSecondaryInfos = async (req, res) => {
     await UserModel.findOneAndUpdate(
       { _id: req.params.id },
       {
-        $push: {
+        $set: {
           carsecondary: {
             location: req.body.location,
             energy: req.body.energy,
@@ -68,7 +68,7 @@ module.exports.manageCarPics = async (req, res) => {
     await UserModel.findOneAndUpdate(
       { _id: req.params.id },
       {
-        $push: {
+        $set: {
           carPics: {
             img1: req.body.img1,
             img2: req.body.img2,
