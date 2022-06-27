@@ -6,7 +6,7 @@ import { NavLink } from "react-router-dom";
 const PrimaryInfo = () => {
   const userData = useSelector((state) => state.userReducer);
 
-console.log(userData.carprimary)
+  // console.log(userData.carprimary);
 
   return (
     <div className="primaryInfo">
@@ -16,6 +16,9 @@ console.log(userData.carprimary)
       {/* <p className="carTypeInfo">
         {userData.carprimary.brand + " " + userData.carprimary.model}
       </p> */}
+      <p className="carTypeInfo">
+        {userData.carprimary.brand + " " + userData.carprimary.model}
+      </p>
       <p className="userNameLabel">{userData.pseudo}</p>
       <NavLink exact="true" to="/Settings">
         <div className="settingCall">

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 // navigation : association d'url avec l'affichage front de pages différentes
 const InfoCar = () => {
+  const userData = useSelector((state) => state.userReducer);
   const [moreInfo, setMoreInfo] = useState(false);
 
   return (
@@ -12,37 +14,45 @@ const InfoCar = () => {
           <label>
             Marque <span>*</span>
           </label>
-          <input type="text" placeholder="Honda..."></input>
+          <input
+            type="text"
+            placeholder="Honda..."
+            value={userData.carprimary.brand}
+          ></input>
         </div>
         <div>
           <label>
             Modèle <span>*</span>
           </label>
-          <input type="text" placeholder="Del Sol..."></input>
+          <input
+            type="text"
+            placeholder="Del Sol..."
+            value={userData.carprimary.model}
+          ></input>
         </div>
         <div>
           <label>
             Mise en circulation <span>*</span>
           </label>
-          <input type="date"></input>
+          <input type="number" value={userData.carprimary.date}></input>
         </div>
         <div>
           <label>
             Kilométrage <span>*</span>
           </label>
-          <input type="number"></input>
+          <input type="number" value={userData.carprimary.kilometer}></input>
         </div>
         <div>
           <label>
             Puissance DIN <span>*</span>
           </label>
-          <input type="number"></input>
+          <input type="number" value={userData.carprimary.cvdin} />{" "}
         </div>
         <div>
           <label>
             Puissance fiscale <span>*</span>
           </label>
-          <input type="number"></input>
+          <input type="number" value={userData.carprimary.cvfisc} />
         </div>
         <div className="buttonMoreInfo">
           <p onClick={() => setMoreInfo(!moreInfo)}>

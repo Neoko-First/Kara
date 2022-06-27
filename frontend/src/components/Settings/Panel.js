@@ -8,10 +8,10 @@ import Version from "../Settings/Version";
 const Panel = () => {
   return (
     <div className="settingsContainer">
-        <Logout></Logout>
-        <DeleteAccount></DeleteAccount>
-        <Privacy></Privacy>
-        <Version></Version>
+      <Logout></Logout>
+      <DeleteAccount></DeleteAccount>
+      <Privacy></Privacy>
+      <Version></Version>
     </div>
   );
 };

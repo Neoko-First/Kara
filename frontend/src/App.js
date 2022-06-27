@@ -1,6 +1,6 @@
 import "./App.css";
 import Routes from "./components/Routes/index";
-import Auth from "./pages/Auth";
+// import Auth from "./pages/Auth";
 import { UidContext } from "./components/AppContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -22,11 +22,13 @@ function App() {
         .then((res) => {
           setUid(res.data);
         })
-        .catch((err) => console.log("No token"));
+        .catch((err) => {
+          console.log("No token");
+        });
     };
     fetchToken();
 
-    if(uid) dispatch(getUser(uid))
+    if (uid) dispatch(getUser(uid));
 
     // if(!uid) window.location = "/Auth";
   }, [uid]); // chaque fois que uid evolue, il relance le useEffect

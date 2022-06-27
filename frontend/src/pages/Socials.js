@@ -1,4 +1,5 @@
 import React from "react";
+import ProtectedRoute from "../components/Auth/ProtectedRoute";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Panel from "../components/Socials/Panel";
@@ -7,6 +8,7 @@ import Panel from "../components/Socials/Panel";
 const Home = () => {
   return (
     <>
+      <ProtectedRoute />
       <Header />
       <Panel />
       <Footer />

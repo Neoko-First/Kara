@@ -8,6 +8,16 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
 
+  // toggle password to text
+  const [passwordShown, setPasswordShown] = useState(false);
+
+  // Password toggle handler
+  const togglePassword = () => {
+    // When the handler is invoked
+    // inverse the boolean state of passwordShown
+    setPasswordShown(!passwordShown);
+  };
+
   const handleSignup = (e) => {
     e.preventDefault();
     const pseudoError = document.querySelector(".pseudoError");
@@ -77,13 +87,18 @@ const Signup = () => {
           <label htmlFor="password">
             Mot de passe <span>*</span>
           </label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          ></input>
+          <div className="passwordInputDiv">
+            <input
+              type="password"
+              name="password"
+              id="password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            ></input>
+            <button onClick={togglePassword}>
+              <i className="fas fa-eye"></i>
+            </button>
+          </div>
         </div>
         <div className="passwordError"></div>
         <div>

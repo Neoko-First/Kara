@@ -7,7 +7,7 @@ import Settings from "../../pages/Settings";
 import Auth from "../../pages/Auth";
 
 // navigation : association d'url avec l'affichage front de pages différentes
-const index = () => {
+const Index = () => {
   return (
     <Router>
       <Routes>
@@ -21,4 +21,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
