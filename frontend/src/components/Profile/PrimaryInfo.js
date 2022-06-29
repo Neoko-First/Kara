@@ -10,7 +10,19 @@ const PrimaryInfo = () => {
 
   return (
     <div className="primaryInfo">
-      <img src={require("../../assets/del_sol1.jpg")} alt={userData.picture} />
+      {userData.carPics.img1 ? (
+        <>
+          <img
+            src={require(`../../../public/uploads/profils/${userData.carPics.img1}`)}
+            alt="car"
+          />
+        </>
+      ) : (
+        <img
+          src={require(`../../assets/profil/noPp.svg`)}
+          alt="car"
+        />
+      )}
       {/* {userData.carprimary.brand && userData.carprimary.model && (
       )} */}
       {/* <p className="carTypeInfo">

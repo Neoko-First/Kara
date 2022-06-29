@@ -3,8 +3,7 @@ const authController = require("../controllers/auth.controller");
 const userController = require("../controllers/user.controller");
 const uploadController = require("../controllers/upload.controller");
 const carController = require("../controllers/car.controller");
-const multer = require("multer");
-const upload = multer();
+const upload = require("../middleware/multer-config");
 
 router.post("/signup", authController.signup);
 router.post("/login", authController.login);

@@ -1,7 +1,9 @@
+import { useSelector } from "react-redux";
 import React, { useState } from "react";
 
 // navigation : association d'url avec l'affichage front de pages différentes
 const PicturesManager = () => {
+  const userData = useSelector((state) => state.userReducer);
   const [file, setFile] = useState();
   const handlePicture = (e) => {
     e.preventDefault();
@@ -14,8 +16,21 @@ const PicturesManager = () => {
       <form action="" onSubmit={handlePicture} className="picturesManager">
         <div className="picturesManagerGrid">
           <div className="pictureCard">
-            <i className="fas fa-times-circle"></i>
-            <img src={require("../../assets/del_sol1.jpg")} alt="car" />
+            {userData.carPics.img1 ? (
+              <>
+                <div className="deletePicBtn">
+                  <i className="fas fa-times"></i>
+                </div>
+                <img
+                  src={require(`../../../public/uploads/profils/${userData.carPics.img1}`)}
+                  alt="car"
+                />{" "}
+              </>
+            ) : (
+              <div className="addPicBtn">
+                <i className="fas fa-plus"></i>
+              </div>
+            )}
             <input
               type="file"
               id="file"
@@ -25,7 +40,21 @@ const PicturesManager = () => {
             />
           </div>
           <div className="pictureCard">
-            <img src={require("../../assets/del_sol2.jpg")} alt="car" />
+            {userData.carPics.img2 ? (
+              <>
+                <div className="deletePicBtn">
+                  <i className="fas fa-times"></i>
+                </div>
+                <img
+                  src={require(`../../../public/uploads/profils/${userData.carPics.img2}`)}
+                  alt="car"
+                />
+              </>
+            ) : (
+              <div className="addPicBtn">
+                <i className="fas fa-plus"></i>
+              </div>
+            )}
             <input
               type="file"
               id="file"
@@ -35,7 +64,21 @@ const PicturesManager = () => {
             />
           </div>
           <div className="pictureCard">
-            <img src={require("../../assets/del_sol3.jpg")} alt="car" />
+            {userData.carPics.img3 ? (
+              <>
+                <div className="deletePicBtn">
+                  <i class="fas fa-times"></i>
+                </div>
+                <img
+                  src={require(`../../../public/uploads/profils/${userData.carPics.img3}`)}
+                  alt="car"
+                />
+              </>
+            ) : (
+              <div className="addPicBtn">
+                <i className="fas fa-plus"></i>
+              </div>
+            )}
             <input
               type="file"
               id="file"
@@ -45,6 +88,21 @@ const PicturesManager = () => {
             />
           </div>
           <div className="pictureCard">
+            {userData.carPics.img4 ? (
+              <>
+                <div className="deletePicBtn">
+                  <i className="fas fa-times"></i>
+                </div>
+                <img
+                  src={require(`../../../public/uploads/profils/${userData.carPics.img4}`)}
+                  alt="car"
+                />
+              </>
+            ) : (
+              <div className="addPicBtn">
+                <i className="fas fa-plus"></i>
+              </div>
+            )}
             <input
               type="file"
               id="file"
@@ -52,9 +110,23 @@ const PicturesManager = () => {
               accept=".jpg, .jpeg, .png"
               onChange={(e) => setFile(e.target.files[0])}
             />
-            <i className="fas fa-plus-circle"></i>
           </div>
           <div className="pictureCard">
+            {userData.carPics.img5 ? (
+              <>
+                <div className="deletePicBtn">
+                  <i className="fas fa-times"></i>
+                </div>
+                <img
+                  src={require(`../../../public/uploads/profils/${userData.carPics.img5}`)}
+                  alt="car"
+                />
+              </>
+            ) : (
+              <div className="addPicBtn">
+                <i className="fas fa-plus"></i>
+              </div>
+            )}
             <input
               type="file"
               id="file"
@@ -62,9 +134,23 @@ const PicturesManager = () => {
               accept=".jpg, .jpeg, .png"
               onChange={(e) => setFile(e.target.files[0])}
             />
-            <i className="fas fa-plus-circle"></i>
           </div>
           <div className="pictureCard">
+            {userData.carPics.img6 ? (
+              <>
+                <div className="deletePicBtn">
+                  <i className="fas fa-times"></i>
+                </div>
+                <img
+                  src={require(`../../../public/uploads/profils/${userData.carPics.img6}`)}
+                  alt="car"
+                />
+              </>
+            ) : (
+              <div className="addPicBtn">
+                <i className="fas fa-plus"></i>
+              </div>
+            )}
             <input
               type="file"
               id="file"
@@ -72,7 +158,6 @@ const PicturesManager = () => {
               accept=".jpg, .jpeg, .png"
               onChange={(e) => setFile(e.target.files[0])}
             />
-            <i className="fas fa-plus-circle"></i>
           </div>
         </div>
         <input type="submit" value="Enregistrer" />

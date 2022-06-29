@@ -10,15 +10,17 @@ const Header = () => {
   return (
     <header>
       <div className="profilPictureHeader">
-        {userData._id && (
-          <NavLink exact="true" to="/Profile">
+        {userData.carPics.img1 ? (
+          <>
             <div>
               <img
-                src={require("../assets/profil/moi.jpg")}
+                src={require(`../../public/uploads/profils/${userData.carPics.img1}`)}
                 alt="car"
               />
             </div>
-          </NavLink>
+          </>
+        ) : (
+          <img src={require(`../assets/profil/noPp.svg`)} alt="car" />
         )}
       </div>
       <div className="logoHeader">

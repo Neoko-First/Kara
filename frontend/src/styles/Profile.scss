@@ -79,6 +79,34 @@
             height: 100%;
             opacity: 0;
           }
+          .deletePicBtn {
+            background-color: rgb(166, 0, 255);
+            height: 25px;
+            width: 25px;
+            position: absolute;
+            z-index: 1;
+            bottom: 50%;
+            right: 50%;
+            transform: translate(50%, 50%);
+            border-radius: 50%;
+            i {
+              font-size: 20px;
+            }
+          }
+          .addPicBtn {
+            background-color: rgb(166, 0, 255);
+            height: 25px;
+            width: 25px;
+            position: absolute;
+            z-index: 1;
+            bottom: 50%;
+            right: 50%;
+            transform: translate(50%, 50%);
+            border-radius: 50%;
+            i {
+              font-size: 20px;
+            }
+          }
           i {
             position: absolute;
             bottom: 50%;
