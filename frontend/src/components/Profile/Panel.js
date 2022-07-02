@@ -9,7 +9,7 @@ const Panel = () => {
     <div className="profileContainer">
       <PrimaryInfo />
       <PicturesManager />
-      <InfoCar />
+      {/* <InfoCar /> */}
     </div>
   );
 };

@@ -8,7 +8,7 @@ import Slider from "../components/Slider";
 const Home = () => {
   return (
     <>
-      <ProtectedRoute />
+      {/* <ProtectedRoute /> */}
       <Header />
       <Slider />
       <Footer />

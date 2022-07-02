@@ -8,7 +8,7 @@ import Panel from "../components/Socials/Panel";
 const Home = () => {
   return (
     <>
-      <ProtectedRoute />
+      {/* <ProtectedRoute /> */}
       <Header />
       <Panel />
       <Footer />

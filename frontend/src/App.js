@@ -31,7 +31,7 @@ function App() {
     if (uid) dispatch(getUser(uid));
 
     // if(!uid) window.location = "/Auth";
-  }, [uid]); // chaque fois que uid evolue, il relance le useEffect
+  }, [dispatch, uid]); // chaque fois que uid evolue, il relance le useEffect
 
   return (
     <UidContext.Provider value={uid}>

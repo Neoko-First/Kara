@@ -9,7 +9,7 @@ import ProtectedRoute from "../components/Auth/ProtectedRoute";
 const Settings = () => {
   return (
     <>
-      <ProtectedRoute />
+      {/* <ProtectedRoute /> */}
       <Header />
       <div className="settingsContainer">
         <Panel />

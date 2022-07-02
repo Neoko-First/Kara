@@ -9,7 +9,7 @@ import ProtectedRoute from "../components/Auth/ProtectedRoute";
 const Profile = () => {
   return (
     <>
-      <ProtectedRoute />
+      {/* <ProtectedRoute /> */}
       <Header />
       <Panel />
       <Footer />
