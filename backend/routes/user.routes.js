@@ -17,7 +17,9 @@ router.delete("/:id", userController.deleteUser);
 router.patch("/like/:id", userController.like);
 
 // upload
-router.post("/upload", upload.single("file"), uploadController.uploadProfil);
+// upload.array('photos', 12)
+// upload.single("file")
+router.post("/upload", upload.array('photos', 6), uploadController.uploadProfil);
 
 // Car infos
 router.put("/carPrimary/:id", carController.addCarPrimaryInfos);
