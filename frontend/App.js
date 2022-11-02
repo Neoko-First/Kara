@@ -1,25 +1,51 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import HomeScreen from "./screen/HomeScreen";
+import ProfileScreen from "./screen/ProfileScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "./screen/HomeScreen";
+import Header from "./components/Header";
 import SocialScreen from "./screen/SocialScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Page d'accueil</Text>
-      {/* <StatusBar style="auto" />
-      <HomeScreen />
+    <>
+      <StatusBar
+        animated={true}
+        backgroundColor="#141414"
+        StatusBarStyle="white"
+      />
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Social" component={SocialScreen} />
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={{
+            headerTintColor: "#fff",
+            headerStyle: {
+              backgroundColor: "#141414",
+              color: "white",
+            },
+          }}
+        >
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ headerTitle: () => <Header /> }}
+          />
+          <Stack.Screen
+            name="Social"
+            component={SocialScreen}
+            options={{ headerTitle: () => <Header /> }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{ headerTitle: () => <Header /> }}
+          />
         </Stack.Navigator>
-      </NavigationContainer> */}
-    </View>
+      </NavigationContainer>
+    </>
   );
 }
 
@@ -29,6 +55,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    padding: "20px",
   },
 });

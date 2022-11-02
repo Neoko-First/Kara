@@ -1,23 +1,23 @@
-import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { View, StyleSheet } from "react-native";
+import CarouselCards from "../components/CarouselCards";
+import NavFooter from "../components/NavFooter";
+import SocialFooter from "../components/SocialFooter";
 
 export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text>Page d'accueil</Text>
-      <Button
-        title="Go to Jane's profile"
-        onPress={() => navigation.navigate("Social", { name: "Jane" })}
-      />
-      <StatusBar style="auto" />
+      <CarouselCards />
+      <NavFooter navigation={navigation} />
+      <SocialFooter />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    height: "100%",
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#1d1d1d",
     alignItems: "center",
     justifyContent: "center",
   },
