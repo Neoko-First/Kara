@@ -1,9 +1,6 @@
 import React from "react";
-import "../styles/Profile.scss";
-import Panel from "../components/Profile/Panel";
+import InfosProfile from "../components/Profile/InfosProfile";
 
-const Profile = () => {
-  return <Panel />;
-};
-
-export default Profile;
+export default function Profile() {
+  return <InfosProfile />;
+}

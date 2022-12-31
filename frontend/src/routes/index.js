@@ -1,21 +1,25 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import NoPage from "../pages/NoPage";
 import Home from "../pages/Home";
-import Socials from "../pages/Socials";
 import Profile from "../pages/Profile";
+import Social from "../pages/Social";
+import Conversation from "../pages/Conversation";
 import Settings from "../pages/Settings";
-import Auth from "../pages/Auth";
 
 export default function index() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/socials" element={<Socials />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/auth" element={<Auth />} />
+        <Route>
+          <Route index element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/social" element={<Social />} />
+          <Route path="/chat" element={<Conversation />} />
+          <Route path="*" element={<NoPage />} />
+        </Route>
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }

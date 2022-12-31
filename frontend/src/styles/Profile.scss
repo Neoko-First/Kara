@@ -1,180 +1,109 @@
-.profileContainer {
-  color: white;
-  padding: 20px 0 60px 0;
-  .primaryInfo {
-    width: 100%;
+.infosProfileContainer {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  .infosProfileBox {
+    padding-top: 20px;
+    width: 90%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    position: relative;
-    img {
-      height: 180px;
-      width: 180px;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-    p {
-      margin-top: 10px;
-      text-align: center;
-    }
-    .carTypeInfo {
-      font-size: 20px;
-    }
-    .userNameLabel {
-      font-size: 17px;
-      color: rgb(177, 177, 177);
-    }
-    .settingCall {
-      position: absolute;
-      top: 0;
-      background-color: rgb(166, 0, 255);
-      height: 30px;
-      width: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      right: 25px;
-      border-radius: 50%;
-      button {
-        background-color: transparent;
-        border: none;
-        color: white;
-        font-size: 20px;
+    .infosProfilePicture {
+      height: 230px;
+      width: 230px;
+      position: relative;
+      img {
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
+      }
+      .infosProfileSetting {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        right: 0;
+        background-color: $primary;
+        border-radius: 50%;
+        a {
+          width: 70%;
+          height: 70%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
       }
     }
-  }
-  .picturesManagerContainer {
-    padding: 20px;
-    width: 100%;
-    span {
-      color: red;
-      font-size: 0.8rem;
-    }
-    .picturesManager {
-      margin-top: 10px;
+    .infosProfileName {
       width: 100%;
-      .picturesManagerGrid {
-        width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 25px;
+      margin-top: 20px;
+    }
+    .infosProfileAlbum {
+      width: 100%;
+      margin-top: 20px;
+      p {
+        font-size: 20px;
+        color: $white;
+      }
+      span {
+        font-size: 15px;
+        color: red;
+      }
+      .infosProfileAlbumGrid {
+        margin-top: 10px;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-gap: 10px;
-        grid-auto-rows: 140px;
-        margin-bottom: 10px;
-        .pictureCard {
-          border-radius: 5px;
-          background-color: #393939;
-          outline: 2px dashed #5d5d5d;
+        div {
+          height: 130px;
+          border-radius: 7px;
+          border: 1px dashed $white;
           position: relative;
-          img {
-            object-fit: cover;
-            width: 100%;
-            height: 100%;
-            border-radius: 5px;
+          .addPictureBtn {
             position: absolute;
-            pointer-events: none;
-          }
-          input[type="file"] {
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-          }
-          .deletePicBtn {
-            background-color: rgb(166, 0, 255);
-            height: 27px;
-            width: 27px;
-            position: absolute;
-            z-index: 1;
-            bottom: 50%;
-            right: 50%;
-            transform: translate(50%, 50%);
-            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 0%;
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: none;
-            i {
-              font-size: 17px;
+            img {
+              height: 100%;
+              width: 100%;
             }
           }
-          .addPicBtn {
-            background-color: rgb(166, 0, 255);
-            height: 27px;
-            width: 27px;
-            pointer-events: none;
+          .pictureVisualizer {
             position: absolute;
-            z-index: 1;
-            bottom: 50%;
-            right: 50%;
-            transform: translate(50%, 50%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            i {
-              font-size: 17px;
+            left: 50%;
+            top: 50%;
+            height: 100%;
+            width: 100%;
+            transform: translate(-50%, -50%);
+            border: none;
+            img {
+              height: 100%;
+              width: 100%;
+              border-radius: 7px;
+              object-fit: cover;
             }
           }
-          // i {
-          //   position: absolute;
-          //   bottom: 50%;
-          //   right: 50%;
-          //   z-index: 10;
-          //   font-size: 1.5rem;
-          //   transform: translate(50%, 50%);
-          //   pointer-events: none;
-          //   color: #c9c9c9;
-          // }
-        }
-      }
-      input[type="submit"] {
-        background-color: rgb(166, 0, 255);
-        color: white;
-        border: 0;
-        outline: 0;
-        width: 100%;
-        font-weight: bold;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-      }
-    }
-  }
-  .infoCarContainer {
-    padding: 20px;
-    form {
-      padding: 10px 10px 0 10px;
-      color: white;
-      div {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 10px;
-        label {
-          color: #9f9f9f;
-          margin-bottom: 5px;
-          span {
-            color: rgb(166, 0, 255);
-          }
-        }
-        input,
-        select {
-          padding: 5px 10px;
-          background-color: #393939;
-          border: none;
-          outline: none;
-          color: white;
-          border-radius: 5px;
-        }
-      }
-      .buttonMoreInfo {
-        p {
-          border: none;
-          background-color: rgb(166, 0, 255);
-          color: white;
-          font-weight: bold;
-          padding: 10px;
-          border-radius: 5px;
-          text-align: center;
         }
       }
     }

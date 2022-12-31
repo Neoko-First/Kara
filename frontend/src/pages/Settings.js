@@ -1,15 +1,7 @@
-import React from "react";
-import "../styles/Settings.scss";
-import Panel from "../components/Settings/Panel";
+import React from 'react'
 
-const Settings = () => {
+export default function Settings() {
   return (
-    <>
-      <div className="settingsContainer">
-        <Panel />
-      </div>
-    </>
-  );
-};
-
-export default Settings;
+    <div>Settings</div>
+  )
+}
