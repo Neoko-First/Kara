@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "matchs",
+  "info": {
+    "singularName": "match",
+    "pluralName": "matchs",
+    "displayName": "Matchs"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "pere": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::membre.membre",
+      "inversedBy": "matchs"
+    },
+    "mere": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::membre.membre",
+      "inversedBy": "matchs"
+    }
+  }
+}
