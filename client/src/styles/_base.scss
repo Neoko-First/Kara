@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: 0;
+  scrollbar-width: none;
+  border: 0;
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+  user-select: none;
+  height: 100%;
+  min-height: 100%;
+  position: relative;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+h1 {
+  @apply text-3xl font-bold;
+}
+h2 {
+  @apply text-2xl font-bold;
+}
+h3 {
+  @apply text-xl font-bold;
+}
+h4 {
+  @apply text-lg font-bold;
+}
+h5 {
+  @apply text-base font-bold;
+}
