@@ -1,0 +1,161 @@
+/* ============================================================
+   KARA — Design System Tokens
+   Communauté véhicules / culture auto JDM, stance, custom
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ---------- Brand: violet ---------- */
+  --kara-primary: #7C3AED;        /* purple-600 */
+  --kara-primary-hover: #6D28D9;  /* purple-700 */
+  --kara-primary-pressed: #5B21B6;/* purple-800 */
+  --kara-accent: #A78BFA;         /* purple-400 */
+  --kara-accent-soft: #C4B5FD;    /* purple-300 */
+  --kara-glow: rgba(124, 58, 237, 0.30);
+
+  /* ---------- Status ---------- */
+  --kara-danger: #EF4444;
+  --kara-success: #7C3AED;
+  --kara-warning: #F59E0B;
+
+  /* ---------- Dark mode (default) ---------- */
+  --kara-bg: #0A0A0F;             /* quasi-noir */
+  --kara-surface: #111118;        /* cards, modals */
+  --kara-surface-2: #16161F;      /* nested surfaces */
+  --kara-border: #1E1E2E;
+  --kara-border-strong: #2A2A3D;
+  --kara-text: #F1F0FF;
+  --kara-text-muted: #9594B5;
+  --kara-text-faint: #5C5B78;
+
+  /* ---------- Glass ---------- */
+  --kara-glass-bg: rgba(17, 17, 24, 0.72);
+  --kara-glass-border: rgba(255, 255, 255, 0.08);
+  --kara-overlay-bottom: linear-gradient(to top, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0.7) 35%, rgba(10,10,15,0.2) 65%, transparent 100%);
+  --kara-overlay-top: linear-gradient(to bottom, rgba(10,10,15,0.6) 0%, transparent 60%);
+
+  /* ---------- Typography ---------- */
+  --kara-font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --kara-font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --kara-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* ---------- Radii ---------- */
+  --kara-r-sm: 8px;
+  --kara-r-md: 12px;
+  --kara-r-lg: 16px;
+  --kara-r-xl: 20px;
+  --kara-r-2xl: 24px;
+  --kara-r-3xl: 32px;
+  --kara-r-full: 9999px;
+
+  /* ---------- Shadows ---------- */
+  --kara-shadow-card: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.25);
+  --kara-shadow-purple: 0 8px 24px rgba(124, 58, 237, 0.30);
+  --kara-shadow-glow: 0 0 0 1px rgba(124, 58, 237, 0.4), 0 0 24px rgba(124, 58, 237, 0.35);
+
+  /* ---------- Motion ---------- */
+  --kara-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --kara-dur: 200ms;
+}
+
+/* Light mode override */
+.kara-light {
+  --kara-bg: #F8F7FF;
+  --kara-surface: #FFFFFF;
+  --kara-surface-2: #F1F0FA;
+  --kara-border: #E4E2F0;
+  --kara-border-strong: #CFCBE3;
+  --kara-text: #0A0A0F;
+  --kara-text-muted: #5C5B78;
+  --kara-text-faint: #9594B5;
+  --kara-glass-bg: rgba(255,255,255,0.78);
+  --kara-glass-border: rgba(10,10,15,0.08);
+}
+
+/* ---------- Base typography helpers ---------- */
+.kara-display { font-family: var(--kara-font-display); font-weight: 700; letter-spacing: -0.02em; }
+.kara-body { font-family: var(--kara-font-body); font-weight: 400; }
+.kara-label { font-family: var(--kara-font-body); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; }
+.kara-mono { font-family: var(--kara-font-mono); }
+
+/* ---------- Photo placeholder (for vehicle imagery) ---------- */
+.kara-photo {
+  position: relative;
+  overflow: hidden;
+  background: #1a1626;
+}
+.kara-photo[data-tone="violet-dusk"] {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(167,139,250,0.35), transparent 50%),
+    radial-gradient(circle at 80% 90%, rgba(124,58,237,0.55), transparent 60%),
+    linear-gradient(135deg, #2a1858 0%, #0a0a0f 100%);
+}
+.kara-photo[data-tone="garage-night"] {
+  background:
+    radial-gradient(circle at 70% 30%, rgba(124,58,237,0.25), transparent 55%),
+    linear-gradient(180deg, #1a1830 0%, #06060a 100%);
+}
+.kara-photo[data-tone="track-magenta"] {
+  background:
+    radial-gradient(ellipse at 30% 70%, rgba(236,72,153,0.4), transparent 60%),
+    radial-gradient(circle at 90% 10%, rgba(124,58,237,0.5), transparent 50%),
+    linear-gradient(135deg, #1f0d2e 0%, #0a0a0f 100%);
+}
+.kara-photo[data-tone="amber-stance"] {
+  background:
+    radial-gradient(circle at 30% 30%, rgba(245,158,11,0.35), transparent 55%),
+    radial-gradient(circle at 75% 75%, rgba(124,58,237,0.4), transparent 60%),
+    linear-gradient(135deg, #1a1428 0%, #050505 100%);
+}
+.kara-photo[data-tone="cyan-tokyo"] {
+  background:
+    radial-gradient(circle at 25% 80%, rgba(34,211,238,0.3), transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(124,58,237,0.55), transparent 60%),
+    linear-gradient(135deg, #0d1a2e 0%, #0a0a0f 100%);
+}
+.kara-photo[data-tone="crimson-rwd"] {
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(220,38,38,0.4), transparent 65%),
+    linear-gradient(180deg, #2a0a14 0%, #0a0a0f 100%);
+}
+.kara-photo[data-tone="emerald-build"] {
+  background:
+    radial-gradient(circle at 60% 40%, rgba(16,185,129,0.32), transparent 55%),
+    radial-gradient(circle at 20% 90%, rgba(124,58,237,0.4), transparent 55%),
+    linear-gradient(135deg, #0d1a14 0%, #0a0a0f 100%);
+}
+
+/* subtle scanline / motion lines for vehicle photos */
+.kara-photo::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(180deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 4px);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+.kara-photo-label {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%,-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  text-align: center;
+  pointer-events: none;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+/* hide scrollbar utility */
+.kara-noscroll::-webkit-scrollbar { display: none; }
+.kara-noscroll { scrollbar-width: none; -ms-overflow-style: none; }
+
+/* glass surface */
+.kara-glass {
+  background: var(--kara-glass-bg);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--kara-glass-border);
+}

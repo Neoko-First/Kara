@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Kara — Mobile Design</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="kara-tokens.css" />
+<style>
+  html, body { margin: 0; padding: 0; background: #06060a; min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; }
+  body { color: #F1F0FF; }
+  * { box-sizing: border-box; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="kara-components.jsx"></script>
+<script type="text/babel" src="kara-screen-1.jsx"></script>
+<script type="text/babel" src="kara-screen-2.jsx"></script>
+<script type="text/babel" src="kara-screen-3.jsx"></script>
+<script type="text/babel" src="kara-design-system.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+const TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "themeMode": "dark",
+  "accentHue": 267,
+  "showSpeed": false
+}/*EDITMODE-END*/;
+
+// Wrap a screen in a 390x844 iOS frame with proper status bar overlay
+function Frame({ dark = true, children, label, idLabel }) {
+  return (
+    <div data-screen-label={idLabel || label} style={{ position: 'relative' }}>
+      <IOSDevice width={390} height={844} dark={dark}>
+        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+          {children}
+        </div>
+      </IOSDevice>
+    </div>
+  );
+}
+
+// Live state for interactive prototype: discover scrollable feed, post stepper, chat list/conv
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAKS_DEFAULTS);
+  const [onbStep, setOnbStep] = React.useState(0);
+  const [postStep, setPostStep] = React.useState(0);
+  const [convOpen, setConvOpen] = React.useState(null);
+  const [activeProf, setActiveProf] = React.useState('mine');
+
+  React.useEffect(() => {
+    document.documentElement.classList.toggle('kara-light', tweaks.themeMode === 'light');
+    // Update accent hue
+    const h = tweaks.accentHue;
+    const root = document.documentElement;
+    // base oklch-ish — keep using fixed primary unless hue shifted
+    if (h !== 264) {
+      // recompute purple-ish based on hue
+      root.style.setProperty('--kara-primary', `oklch(0.55 0.22 ${h})`);
+      root.style.setProperty('--kara-accent', `oklch(0.75 0.16 ${h})`);
+      root.style.setProperty('--kara-glow', `oklch(0.55 0.22 ${h} / 0.3)`);
+    } else {
+      root.style.setProperty('--kara-primary', '#7C3AED');
+      root.style.setProperty('--kara-accent', '#A78BFA');
+      root.style.setProperty('--kara-glow', 'rgba(124,58,237,0.3)');
+    }
+  }, [tweaks.themeMode, tweaks.accentHue]);
+
+  return (
+    <>
+      <DesignCanvas title="Kara — Mobile App" subtitle="iPhone · 390×844 · Dark mode" defaultZoom={0.7}>
+
+        <DCSection id="ds" title="Design System" subtitle="Tokens, type, couleurs, composants.">
+          <DCArtboard id="ds-card" label="01 · Système de design" width={390} height={844}>
+            <Frame dark idLabel="01 Design System">
+              <KaraDesignSystem />
+            </Frame>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="onboarding" title="Onboarding" subtitle="3 slides + Auth.">
+          <DCArtboard id="onb1" label="02 · Onboarding 1" width={390} height={844}>
+            <Frame dark idLabel="02 Onboarding 1">
+              <KaraOnboarding slide={0} onAdvance={() => {}} />
+            </Frame>
+          </DCArtboard>
+          <DCArtboard id="onb2" label="03 · Onboarding 2" width={390} height={844}>
+            <Frame dark idLabel="03 Onboarding 2">
+              <KaraOnboarding slide={1} />
+            </Frame>
+          </DCArtboard>
+          <DCArtboard id="onb3" label="04 · Onboarding 3" width={390} height={844}>
+            <Frame dark idLabel="04 Onboarding 3">
+              <KaraOnboarding slide={2} />
+            </Frame>
+          </DCArtboard>
+          <DCArtboard id="auth" label="05 · Auth" width={390} height={844}>
+            <Frame dark idLabel="05 Auth">
+              <KaraAuth />
+            </Frame>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="discover" title="Discover" subtitle="Feed scroll-snap façon magazine.">
+          <DCArtboard id="disc" label="06 · Discover Feed" width={390} height={844}>
+            <Frame dark idLabel="06 Discover">
+              <KaraDiscover />
+            </Frame>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="search" title="Search" subtitle="Catégories, tendances, builds récents.">
+          <DCArtboard id="search-ab" label="07 · Search" width={390} height={844}>
+            <Frame dark idLabel="07 Search">
+              <KaraSearch />
+            </Frame>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="post" title="Créer un build" subtitle="Stepper 4 étapes.">
+          <DCArtboard id="post1" label="08 · Post · Photos" width={390} height={844}>
+            <Frame dark idLabel="08 Post Photos"><KaraPost step={0} /></Frame>
+          </DCArtboard>
+          <DCArtboard id="post2" label="09 · Post · Specs" width={390} height={844}>
+            <Frame dark idLabel="09 Post Specs"><KaraPost step={1} /></Frame>
+          </DCArtboard>
+          <DCArtboard id="post3" label="10 · Post · Description" width={390} height={844}>
+            <Frame dark idLabel="10 Post Description"><KaraPost step={2} /></Frame>
+          </DCArtboard>
+          <DCArtboard id="post4" label="11 · Post · Localisation" width={390} height={844}>
+            <Frame dark idLabel="11 Post Location"><KaraPost step={3} /></Frame>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="chat" title="Chat" subtitle="Liste + conversation.">
+          <DCArtboard id="chatlist" label="12 · Chat list" width={390} height={844}>
+            <Frame dark idLabel="12 Chat List"><KaraChatList /></Frame>
+          </DCArtboard>
+          <DCArtboard id="conv" label="13 · Conversation" width={390} height={844}>
+            <Frame dark idLabel="13 Conversation"><KaraConversation /></Frame>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="profile" title="Profil utilisateur" subtitle="Mien et vue d'un autre.">
+          <DCArtboard id="profile-me" label="14 · Mon profil" width={390} height={844}>
+            <Frame dark idLabel="14 My Profile"><KaraProfile isMine /></Frame>
+          </DCArtboard>
+          <DCArtboard id="profile-other" label="15 · Profil d'un autre" width={390} height={844}>
+            <Frame dark idLabel="15 Other Profile"><KaraProfile isMine={false} /></Frame>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="vehicle" title="Profil véhicule" subtitle="Page détail.">
+          <DCArtboard id="veh" label="16 · Vehicle detail" width={390} height={844}>
+            <Frame dark idLabel="16 Vehicle Detail"><KaraVehicleDetail /></Frame>
+          </DCArtboard>
+        </DCSection>
+
+      </DesignCanvas>
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection title="Thème">
+          <TweakRadio label="Mode" value={tweaks.themeMode} options={['dark','light']} onChange={v => setTweak('themeMode', v)} />
+          <TweakSlider label="Accent (hue)" value={tweaks.accentHue} min={0} max={360} step={1} onChange={v => setTweak('accentHue', v)} />
+        </TweakSection>
+        <TweakSection title="Astuces">
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>
+            • Le feed Discover se scrolle (snap par card)<br/>
+            • Le bouton « Suivre » est interactif<br/>
+            • Tu peux réorganiser les artboards par drag<br/>
+            • Clique sur un artboard pour le voir en plein écran
+          </div>
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+import "../global.css";
 import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -9,6 +10,9 @@ import {
   Inter_500Medium,
   Inter_600SemiBold,
 } from "@expo-google-fonts/inter";
+import { QueryClientProvider } from "@tanstack/react-query";
+import Toast from "react-native-toast-message";
+import { queryClient } from "../lib/query-client";
 
 // Empêche le splash screen de se cacher automatiquement
 // avant que les polices soient chargées
@@ -34,14 +38,17 @@ export default function RootLayout() {
   if (!fontsLoaded && !fontError) return null;
 
   return (
-    <>
-      <StatusBar style="light" />
-      <Stack screenOptions={{ headerShown: false }}>
-        {/* Groupe auth — pas de tab bar */}
-        <Stack.Screen name="(auth)" />
-        {/* Groupe tabs — avec tab bar */}
-        <Stack.Screen name="(tabs)" />
-      </Stack>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <>
+        <StatusBar style="light" />
+        <Stack screenOptions={{ headerShown: false }}>
+          {/* Groupe auth — pas de tab bar */}
+          <Stack.Screen name="(auth)" />
+          {/* Groupe tabs — avec tab bar */}
+          <Stack.Screen name="(tabs)" />
+        </Stack>
+        <Toast />
+      </>
+    </QueryClientProvider>
   );
 }
