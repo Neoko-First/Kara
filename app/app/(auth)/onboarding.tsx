@@ -1,222 +1,192 @@
-import React, { useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useRef, useState } from 'react';
+import { View, ScrollView, Text, Pressable, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ArrowRight } from 'lucide-react-native';
+import { ChevronRight } from 'lucide-react-native';
 import { KaraPhoto, PhotoTone } from '@/components/shared/KaraPhoto';
 import { KaraWordmark } from '@/components/shared/KaraWordmark';
+import { KaraButton } from '@/components/shared/KaraButton';
 
-const SLIDES: { tone: PhotoTone; label: string; kicker: string; title: string; sub: string }[] = [
+const SLIDES: { title: string; subtitle: string; tone: PhotoTone }[] = [
   {
-    tone: 'cyan-tokyo',
-    label: 'NIGHT MEET · TOKYO',
-    kicker: 'Communauté',
-    title: 'Trouve ta communauté',
-    sub: 'Suis les builds, les owners et les meets de ta région. JDM, stance, custom, daily — tout y passe.',
+    title: 'Trouve ta communauté',
+    subtitle: 'Des milliers de passionnés partagent leurs builds chaque jour.',
+    tone: 'violet-dusk',
   },
   {
-    tone: 'track-magenta',
-    label: 'TRACK DAY · DRIFT',
-    kicker: 'Échange',
     title: 'Échange avec les passionnés',
-    sub: "DM directs, conseils, pièces, spots. Ta tribu motorisée à portée de main.",
+    subtitle: 'Commente, like, et envoie des messages directement.',
+    tone: 'track-magenta',
   },
   {
-    tone: 'amber-stance',
-    label: 'EVENTS · MARKETPLACE',
-    kicker: 'Bientôt',
     title: 'Events & Marketplace',
-    sub: "Billets, annonces, rencontres officielles. Le réseau s'agrandit.",
+    subtitle: 'Retrouve des événements près de toi et achète les pièces de tes rêves.',
+    tone: 'amber-stance',
   },
 ];
 
 export default function OnboardingScreen() {
-  const [slide, setSlide] = useState(0);
+  const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const s = SLIDES[slide];
+  const scrollRef = useRef<ScrollView>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  function handleNext() {
-    if (slide < 2) {
-      setSlide(slide + 1);
-    } else {
-      router.push('/(auth)/login');
-    }
-  }
+  const goToNext = () => {
+    const next = activeIndex + 1;
+    scrollRef.current?.scrollTo({ x: next * width, animated: true });
+    setActiveIndex(next);
+  };
+
+  const goToLogin = () => router.replace('/(auth)/login');
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000' }}>
-      {/* Background photo */}
-      <KaraPhoto
-        tone={s.tone}
-        label={s.label}
-        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
-      />
-
-      {/* Dark overlay */}
-      <LinearGradient
-        colors={['rgba(10,10,15,0.4)', 'rgba(10,10,15,0.65)', 'rgba(10,10,15,0.96)']}
-        locations={[0, 0.4, 1]}
-        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
-      />
-
-      {/* Logo */}
-      <View
-        style={{
-          position: 'absolute',
-          top: insets.top + 20,
-          left: 0,
-          right: 0,
-          alignItems: 'center',
-          zIndex: 5,
+    <View style={{ flex: 1, backgroundColor: '#0A0A0F' }}>
+      {/* Slides */}
+      <ScrollView
+        ref={scrollRef}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onMomentumScrollEnd={(e) => {
+          const index = Math.round(e.nativeEvent.contentOffset.x / width);
+          setActiveIndex(index);
         }}
       >
-        <KaraWordmark size={28} color="#fff" />
-      </View>
-
-      {/* Skip */}
-      <Pressable
-        onPress={() => router.push('/(auth)/login')}
-        style={{
-          position: 'absolute',
-          top: insets.top + 20,
-          right: 20,
-          zIndex: 5,
-          padding: 8,
-        }}
-      >
-        <Text
-          style={{
-            color: 'rgba(255,255,255,0.65)',
-            fontFamily: 'Inter_500Medium',
-            fontSize: 14,
-          }}
-        >
-          Passer
-        </Text>
-      </Pressable>
-
-      {/* Bottom content */}
-      <View
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          padding: 28,
-          paddingBottom: insets.bottom + 50,
-          zIndex: 5,
-        }}
-      >
-        <Text
-          style={{
-            color: '#A78BFA',
-            fontFamily: 'Inter_600SemiBold',
-            fontSize: 11,
-            letterSpacing: 1.2,
-            textTransform: 'uppercase',
-            marginBottom: 14,
-          }}
-        >
-          {String(slide + 1).padStart(2, '0')} — {s.kicker}
-        </Text>
-
-        <Text
-          style={{
-            color: '#fff',
-            fontFamily: 'SpaceGrotesk_700Bold',
-            fontSize: 42,
-            lineHeight: 46,
-            marginBottom: 14,
-          }}
-        >
-          {s.title}
-        </Text>
-
-        <Text
-          style={{
-            color: 'rgba(241,240,255,0.75)',
-            fontFamily: 'Inter_400Regular',
-            fontSize: 15,
-            lineHeight: 22,
-            marginBottom: 32,
-            maxWidth: 320,
-          }}
-        >
-          {s.sub}
-        </Text>
-
-        {/* Dots + CTA row */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-          {/* Progress dots */}
-          <View style={{ flexDirection: 'row', gap: 6 }}>
-            {[0, 1, 2].map((i) => (
-              <View
-                key={i}
-                style={{
-                  height: 6,
-                  width: i === slide ? 22 : 6,
-                  borderRadius: 3,
-                  backgroundColor:
-                    i === slide ? '#7C3AED' : 'rgba(255,255,255,0.25)',
-                }}
-              />
-            ))}
-          </View>
-
-          <View style={{ flex: 1 }} />
-
-          {slide < 2 ? (
-            <Pressable
-              onPress={handleNext}
+        {SLIDES.map((slide, i) => (
+          <KaraPhoto
+            key={i}
+            tone={slide.tone}
+            style={{ width, flex: 1 }}
+          >
+            {/* Wordmark haut gauche */}
+            <View
               style={{
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-                backgroundColor: '#7C3AED',
-                alignItems: 'center',
-                justifyContent: 'center',
-                shadowColor: '#7C3AED',
-                shadowOffset: { width: 0, height: 8 },
-                shadowOpacity: 0.5,
-                shadowRadius: 16,
-                elevation: 10,
+                position: 'absolute',
+                top: insets.top + 16,
+                left: 24,
               }}
             >
-              <ArrowRight size={24} color="#fff" strokeWidth={2.25} />
-            </Pressable>
-          ) : (
-            <Pressable
-              onPress={handleNext}
+              <KaraWordmark size={24} color="#fff" />
+            </View>
+
+            {/* Contenu bas de slide */}
+            <View
               style={{
-                height: 56,
-                paddingHorizontal: 24,
-                borderRadius: 999,
-                backgroundColor: '#7C3AED',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 8,
-                shadowColor: '#7C3AED',
-                shadowOffset: { width: 0, height: 8 },
-                shadowOpacity: 0.5,
-                shadowRadius: 16,
-                elevation: 10,
+                flex: 1,
+                justifyContent: 'flex-end',
+                paddingHorizontal: 32,
+                paddingBottom: insets.bottom + 140,
               }}
             >
               <Text
                 style={{
                   color: '#fff',
-                  fontFamily: 'Inter_600SemiBold',
-                  fontSize: 16,
+                  fontFamily: 'SpaceGrotesk_700Bold',
+                  fontSize: 36,
+                  lineHeight: 42,
+                  marginBottom: 16,
                 }}
               >
-                Commencer
+                {slide.title}
               </Text>
-              <ArrowRight size={18} color="#fff" strokeWidth={2.25} />
-            </Pressable>
-          )}
+              <Text
+                style={{
+                  color: 'rgba(255,255,255,0.65)',
+                  fontFamily: 'Inter_400Regular',
+                  fontSize: 17,
+                  lineHeight: 26,
+                }}
+              >
+                {slide.subtitle}
+              </Text>
+            </View>
+          </KaraPhoto>
+        ))}
+      </ScrollView>
+
+      {/* "Passer" en overlay absolu (hors ScrollView — évite la duplication pendant le scroll) */}
+      {activeIndex < 2 && (
+        <Pressable
+          onPress={goToLogin}
+          style={{
+            position: 'absolute',
+            top: insets.top + 20,
+            right: 24,
+            zIndex: 10,
+            padding: 4,
+          }}
+        >
+          <Text
+            style={{
+              color: 'rgba(255,255,255,0.7)',
+              fontFamily: 'Inter_500Medium',
+              fontSize: 15,
+            }}
+          >
+            Passer
+          </Text>
+        </Pressable>
+      )}
+
+      {/* Footer fixe — dots + bouton action */}
+      <View
+        style={{
+          position: 'absolute',
+          bottom: insets.bottom + 32,
+          left: 0,
+          right: 0,
+          alignItems: 'center',
+          gap: 24,
+        }}
+      >
+        {/* Dots indicateurs */}
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          {SLIDES.map((_, i) => (
+            <View
+              key={i}
+              style={{
+                width: i === activeIndex ? 24 : 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor:
+                  i === activeIndex ? '#7C3AED' : 'rgba(255,255,255,0.25)',
+              }}
+            />
+          ))}
         </View>
+
+        {/* Flèche → sur slides 1–2, "Commencer" sur slide 3 */}
+        {activeIndex < 2 ? (
+          <Pressable
+            onPress={goToNext}
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: 28,
+              backgroundColor: '#7C3AED',
+              alignItems: 'center',
+              justifyContent: 'center',
+              shadowColor: '#7C3AED',
+              shadowOffset: { width: 0, height: 6 },
+              shadowOpacity: 0.5,
+              shadowRadius: 12,
+              elevation: 8,
+            }}
+          >
+            <ChevronRight size={24} color="#fff" strokeWidth={2.5} />
+          </Pressable>
+        ) : (
+          <KaraButton
+            variant="primary"
+            size="lg"
+            onPress={goToLogin}
+            style={{ paddingHorizontal: 48 }}
+          >
+            Commencer
+          </KaraButton>
+        )}
       </View>
     </View>
   );

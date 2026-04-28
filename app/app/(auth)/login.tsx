@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Linking } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Apple, Mail } from 'lucide-react-native';
+import Toast from 'react-native-toast-message';
 import { KaraPhoto } from '@/components/shared/KaraPhoto';
 import { KaraWordmark } from '@/components/shared/KaraWordmark';
+import { supabase } from '@/lib/supabase';
 
 function GoogleIcon({ size = 20 }: { size?: number }) {
   return (
@@ -28,8 +30,28 @@ export default function LoginScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  function handleAuth() {
-    router.replace('/(tabs)');
+  async function handleApple() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'apple',
+      options: { redirectTo: 'kara://auth/callback' },
+    });
+    if (error) {
+      Toast.show({ type: 'error', text1: error.message });
+      return;
+    }
+    if (data.url) await Linking.openURL(data.url);
+  }
+
+  async function handleGoogle() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: 'kara://auth/callback' },
+    });
+    if (error) {
+      Toast.show({ type: 'error', text1: error.message });
+      return;
+    }
+    if (data.url) await Linking.openURL(data.url);
   }
 
   return (
@@ -77,7 +99,7 @@ export default function LoginScreen() {
         {/* Auth buttons */}
         <View style={{ gap: 10 }}>
           <Pressable
-            onPress={handleAuth}
+            onPress={handleApple}
             style={{
               height: 54,
               borderRadius: 16,
@@ -101,7 +123,7 @@ export default function LoginScreen() {
           </Pressable>
 
           <Pressable
-            onPress={handleAuth}
+            onPress={handleGoogle}
             style={{
               height: 54,
               borderRadius: 16,
@@ -127,7 +149,6 @@ export default function LoginScreen() {
           </Pressable>
 
           <Pressable
-            onPress={handleAuth}
             style={{
               height: 44,
               flexDirection: 'row',

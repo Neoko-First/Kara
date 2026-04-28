@@ -318,7 +318,7 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
             <KaraButton
               variant={following ? 'secondary' : 'primary'}
               size="md"
-              full
+              className='flex-1'
               onPress={() => setFollowing(!following)}
             >
               <Text
@@ -357,7 +357,7 @@ export default function DiscoverScreen() {
   const [containerHeight, setContainerHeight] = useState(0);
 
   return (
-    <View className="flex-1 bg-kara-bg">
+    <View className="flex-1 bg-kara-bg pt-14 pb-4">
       {/* Floating header — overlaps the FlatList */}
       <View
         style={{
