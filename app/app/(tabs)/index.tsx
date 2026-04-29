@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   FlatList,
   Pressable,
   ScrollView,
+  Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,69 +21,60 @@ import {
   Car,
   Bike,
 } from 'lucide-react-native';
-import { KaraPhoto, PhotoTone } from '@/components/shared/KaraPhoto';
+import Toast from 'react-native-toast-message';
+import { KaraPhoto } from '@/components/shared/KaraPhoto';
 import { KaraWordmark } from '@/components/shared/KaraWordmark';
 import { KaraAvatar } from '@/components/shared/KaraAvatar';
 import { KaraTag } from '@/components/shared/KaraTag';
 import { KaraBadge } from '@/components/shared/KaraBadge';
 import { KaraButton } from '@/components/shared/KaraButton';
+import { useVehicles, VehicleWithRelations } from '@/lib/hooks/use-vehicles';
+import { buildImageUrl } from '@/lib/supabase';
+import { handleSupabaseError } from '@/lib/supabase-error';
 
-const VEHICLE_DATA = [
-  {
-    id: '1',
-    owner: 'aki_drift',
-    city: 'Lyon, 69',
-    name: 'Nissan Silvia S15',
-    specs: 'SR20DET · 280ch · RWD',
-    tags: ['#JDM', '#Turbo', '#Stance', '#Drift'],
-    type: 'Voiture',
-    tone: 'cyan-tokyo' as PhotoTone,
-    label: 'NISSAN S15 · MIDNIGHT',
-    country: '🇯🇵',
-    photos: 6,
-    photoIdx: 1,
-    online: true,
-    likes: 1245,
-  },
-  {
-    id: '2',
-    owner: 'maxprt_rs',
-    city: 'Marseille, 13',
-    name: 'Audi RS3 8V',
-    specs: '2.5 TFSI · 400ch · AWD',
-    tags: ['#Stance', '#Daily', '#OEM+', '#Track'],
-    type: 'Voiture',
-    tone: 'amber-stance' as PhotoTone,
-    label: 'AUDI RS3 · GOLDEN HOUR',
-    country: '🇩🇪',
-    photos: 4,
-    photoIdx: 1,
-    online: false,
-    likes: 892,
-  },
-  {
-    id: '3',
-    owner: 'duc_panigale',
-    city: 'Nice, 06',
-    name: 'Ducati Panigale V4',
-    specs: '1103cc · 214ch · 198kg',
-    tags: ['#Track', '#Italian', '#V4', '#Akrapovic'],
-    type: 'Moto',
-    tone: 'crimson-rwd' as PhotoTone,
-    label: 'DUCATI V4 · ASCARI',
-    country: '🇮🇹',
-    photos: 5,
-    photoIdx: 2,
-    online: true,
-    likes: 2341,
-  },
-];
+// Mapping code pays ISO 3166-1 alpha-2 → emoji drapeau
+const COUNTRY_EMOJI: Record<string, string> = {
+  JP: '🇯🇵', FR: '🇫🇷', DE: '🇩🇪', IT: '🇮🇹', US: '🇺🇸',
+  GB: '🇬🇧', ES: '🇪🇸', KR: '🇰🇷', SE: '🇸🇪', BE: '🇧🇪',
+  NL: '🇳🇱', CH: '🇨🇭', AT: '🇦🇹', AU: '🇦🇺', CA: '🇨🇦',
+};
 
-type Vehicle = (typeof VEHICLE_DATA)[0];
+// Mapping type DB → libellé français affiché
+const TYPE_LABEL: Record<string, string> = {
+  car: 'Voiture', moto: 'Moto', van: 'Van',
+  truck: 'Camion', bike: 'Vélo', classic: 'Classic',
+};
 
-function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: number }) {
+function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelations; cardHeight: number }) {
   const [following, setFollowing] = useState(false);
+  // photoIdx géré localement — le carousel interactif arrive en Story 2.2
+  const [photoIdx] = useState(0);
   const router = useRouter();
+
+  // Valeurs dérivées depuis les données DB
+  const displayName = `${vehicle.brand} ${vehicle.model}`;
+  const specsArr = [
+    vehicle.displacement,
+    vehicle.power != null ? `${vehicle.power}ch` : null,
+    vehicle.transmission,
+  ].filter(Boolean) as string[];
+  const displaySpecs = specsArr.join(' · ');
+
+  const coverPhoto = vehicle.vehicle_photos.find((p) => p.is_cover) ?? vehicle.vehicle_photos[0];
+  const photoCount = vehicle.vehicle_photos.length;
+  // storage_path = chemin brut Supabase Storage → buildImageUrl() obligatoire (NFR2)
+  const coverUrl = coverPhoto
+    ? buildImageUrl(coverPhoto.storage_path, { width: 800, quality: 80 })
+    : null;
+
+  // Profil propriétaire — protégé contre null (RLS peut bloquer la lecture)
+  const ownerUsername = vehicle.profiles?.username ?? '';
+  const ownerCity = vehicle.profiles?.city ?? vehicle.city ?? '';
+  const ownerInitial = ownerUsername[0]?.toUpperCase() ?? '?';
+
+  const countryEmoji = COUNTRY_EMOJI[vehicle.country_code ?? ''] ?? '';
+  const typeLabel = TYPE_LABEL[vehicle.type] ?? vehicle.type;
+  const TypeIcon = ['moto', 'bike'].includes(vehicle.type) ? Bike : Car;
 
   return (
     <Pressable
@@ -98,26 +90,34 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
           borderColor: '#1E1E2E',
         }}
       >
-        {/* Background photo */}
-        <KaraPhoto
-          tone={vehicle.tone}
-          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
-        />
+        {/* Photo de couverture — Image réelle ou placeholder KaraPhoto */}
+        {coverUrl ? (
+          <Image
+            source={{ uri: coverUrl }}
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+            resizeMode="cover"
+          />
+        ) : (
+          <KaraPhoto
+            tone="crimson-rwd"
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+          />
+        )}
 
-        {/* Top gradient */}
+        {/* Gradient haut */}
         <LinearGradient
           colors={['rgba(10,10,15,0.6)', 'transparent']}
           style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 120, zIndex: 2 }}
         />
 
-        {/* Bottom gradient */}
+        {/* Gradient bas */}
         <LinearGradient
           colors={['transparent', 'rgba(10,10,15,0.82)', 'rgba(10,10,15,0.98)']}
           locations={[0, 0.4, 1]}
           style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 400, zIndex: 2 }}
         />
 
-        {/* Top corners */}
+        {/* Badges haut (type + pays/index photo) */}
         <View
           style={{
             position: 'absolute',
@@ -131,10 +131,8 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
         >
           <KaraBadge
             tone="glass"
-            icon={vehicle.type === 'Moto'
-              ? <Bike size={12} color="#fff" strokeWidth={2} />
-              : <Car size={12} color="#fff" strokeWidth={2} />}
-            label={vehicle.type}
+            icon={<TypeIcon size={12} color="#fff" strokeWidth={2} />}
+            label={typeLabel}
           />
           <View
             style={{
@@ -149,7 +147,7 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
               gap: 4,
             }}
           >
-            <Text style={{ fontSize: 13 }}>{vehicle.country}</Text>
+            <Text style={{ fontSize: 13 }}>{countryEmoji}</Text>
             <Text
               style={{
                 color: '#fff',
@@ -157,12 +155,12 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
                 fontSize: 11,
               }}
             >
-              · {vehicle.photoIdx}/{vehicle.photos}
+              · {photoIdx + 1}/{photoCount > 0 ? photoCount : 1}
             </Text>
           </View>
         </View>
 
-        {/* Photo dots */}
+        {/* Dots de progression photos */}
         <View
           style={{
             position: 'absolute',
@@ -175,23 +173,20 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
             zIndex: 4,
           }}
         >
-          {Array.from({ length: vehicle.photos }).map((_, idx) => (
+          {Array.from({ length: Math.max(photoCount, 1) }).map((_, idx) => (
             <View
               key={idx}
               style={{
                 height: 3,
-                width: idx === vehicle.photoIdx - 1 ? 18 : 4,
+                width: idx === photoIdx ? 18 : 4,
                 borderRadius: 2,
-                backgroundColor:
-                  idx === vehicle.photoIdx - 1
-                    ? '#fff'
-                    : 'rgba(255,255,255,0.4)',
+                backgroundColor: idx === photoIdx ? '#fff' : 'rgba(255,255,255,0.4)',
               }}
             />
           ))}
         </View>
 
-        {/* Side action rail */}
+        {/* Colonne d'actions droite (style TikTok) — visuels uniquement, logique en Story 5.1 */}
         <View
           style={{
             position: 'absolute',
@@ -217,6 +212,7 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
               <Icon size={20} color="#fff" />
             </Pressable>
           ))}
+          {/* Compteur likes — 0 jusqu'à Story 5.1 */}
           <Text
             style={{
               fontFamily: 'Inter_500Medium',
@@ -225,11 +221,11 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
               textAlign: 'center',
             }}
           >
-            {vehicle.likes}
+            0
           </Text>
         </View>
 
-        {/* Bottom info overlay */}
+        {/* Overlay bas — infos véhicule */}
         <View
           style={{
             position: 'absolute',
@@ -240,7 +236,7 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
             zIndex: 3,
           }}
         >
-          {/* Owner row */}
+          {/* Ligne propriétaire */}
           <View
             style={{
               flexDirection: 'row',
@@ -251,9 +247,9 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
           >
             <KaraAvatar
               size={36}
-              tone={vehicle.tone}
-              initial={vehicle.owner[0].toUpperCase()}
-              online={vehicle.online}
+              tone="crimson-rwd"
+              initial={ownerInitial}
+              online={false}
             />
             <View style={{ flex: 1 }}>
               <Text
@@ -263,7 +259,7 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
                   fontSize: 14,
                 }}
               >
-                @{vehicle.owner}
+                @{ownerUsername}
               </Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <MapPin size={11} color="rgba(255,255,255,0.55)" strokeWidth={1.6} />
@@ -274,12 +270,13 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
                     fontFamily: 'Inter_400Regular',
                   }}
                 >
-                  {vehicle.city}
+                  {ownerCity}
                 </Text>
               </View>
             </View>
           </View>
 
+          {/* Nom véhicule — font-display bold (UX-DR2) */}
           <Text
             style={{
               color: '#fff',
@@ -289,8 +286,10 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
               marginBottom: 4,
             }}
           >
-            {vehicle.name}
+            {displayName}
           </Text>
+
+          {/* Specs en caps */}
           <Text
             style={{
               color: '#A78BFA',
@@ -300,25 +299,27 @@ function VehicleCard({ vehicle, cardHeight }: { vehicle: Vehicle; cardHeight: nu
               letterSpacing: 0.8,
             }}
           >
-            {vehicle.specs}
+            {displaySpecs}
           </Text>
 
+          {/* Tags scrollables */}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ gap: 6 }}
             style={{ marginBottom: 14 }}
           >
-            {vehicle.tags.map((t) => (
+            {(vehicle.tags ?? []).map((t) => (
               <KaraTag key={t}>{t}</KaraTag>
             ))}
           </ScrollView>
 
+          {/* Boutons Suivre + Message */}
           <View style={{ flexDirection: 'row', gap: 8 }}>
             <KaraButton
               variant={following ? 'secondary' : 'primary'}
               size="md"
-              className='flex-1'
+              className="flex-1"
               onPress={() => setFollowing(!following)}
             >
               <Text
@@ -356,9 +357,78 @@ export default function DiscoverScreen() {
   const insets = useSafeAreaInsets();
   const [containerHeight, setContainerHeight] = useState(0);
 
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useVehicles();
+
+  // Items à afficher : toutes les pages aplaties en tableau unique
+  const items = data?.pages.flatMap((page) => page) ?? [];
+
+  // Toast d'erreur si le chargement Supabase échoue
+  useEffect(() => {
+    if (isError && error) {
+      Toast.show({ type: 'error', text1: handleSupabaseError(error) });
+    }
+  }, [isError, error]);
+
+  // Skeleton affiché pendant le chargement initial (aucune donnée encore disponible)
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#0A0A0F' }}>
+        <View
+          style={{
+            position: 'absolute',
+            top: insets.top + 8,
+            left: 0,
+            right: 0,
+            zIndex: 20,
+            paddingHorizontal: 18,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+          pointerEvents="box-none"
+        >
+          <KaraWordmark size={22} color="#fff" />
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <View
+              style={{
+                width: 38, height: 38, borderRadius: 19,
+                backgroundColor: 'rgba(17,17,24,0.72)',
+                borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+                alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <Bell size={18} color="#fff" />
+            </View>
+            <View
+              style={{
+                width: 38, height: 38, borderRadius: 19,
+                backgroundColor: 'rgba(17,17,24,0.72)',
+                borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+                alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <SlidersHorizontal size={18} color="#fff" strokeWidth={1.6} />
+            </View>
+          </View>
+        </View>
+        <View style={{ flex: 1, paddingHorizontal: 12, paddingTop: insets.top + 56 }}>
+          <View style={{ flex: 1, borderRadius: 28, backgroundColor: '#111118' }} />
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View className="flex-1 bg-kara-bg pt-14 pb-4">
-      {/* Floating header — overlaps the FlatList */}
+      {/* Header flottant — au-dessus du FlatList */}
       <View
         style={{
           position: 'absolute',
@@ -406,20 +476,25 @@ export default function DiscoverScreen() {
         </View>
       </View>
 
-      {/* Feed */}
+      {/* Feed scroll-snap vertical (style TikTok) */}
       <View
         style={{ flex: 1 }}
         onLayout={(e) => setContainerHeight(e.nativeEvent.layout.height)}
       >
         {containerHeight > 0 && (
           <FlatList
-            data={VEHICLE_DATA}
+            data={items}
             keyExtractor={(item) => item.id}
             pagingEnabled
             showsVerticalScrollIndicator={false}
             decelerationRate="fast"
             snapToAlignment="start"
             snapToInterval={containerHeight}
+            removeClippedSubviews={true}
+            onEndReached={() => {
+              if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+            }}
+            onEndReachedThreshold={0.5}
             renderItem={({ item }) => (
               <VehicleCard vehicle={item} cardHeight={containerHeight} />
             )}
