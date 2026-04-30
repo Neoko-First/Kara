@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, Image } from 'react-native';
+import { View, Text, ScrollView, Pressable, Image, TextInput, Switch, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import {
@@ -10,6 +10,7 @@ import Toast from 'react-native-toast-message';
 import { KaraPhoto } from '@/components/shared/KaraPhoto';
 import { KaraTag } from '@/components/shared/KaraTag';
 import { usePostStore } from '@/lib/stores/use-post-store';
+import { useCreateVehicle } from '@/lib/hooks/use-create-vehicle';
 
 const STEPS = ['Photos', 'Type & Specs', 'Description', 'Localisation'];
 
@@ -19,8 +20,17 @@ const VEHICLE_TYPES = [
   { id: 'van', label: 'Van', Icon: Truck },
   { id: 'truck', label: 'Camion', Icon: Truck },
   { id: 'classic', label: 'Classic', Icon: Sparkles },
-  { id: 'other', label: 'Autre', Icon: Car },
+  { id: 'velo', label: 'Vélo', Icon: Bike },
 ];
+
+const TAG_SUGGESTIONS_BY_TYPE: Record<string, string[]> = {
+  car:     ['#JDM', '#Stance', '#Tuning', '#Track', '#Daily', '#Modified', '#OEM+'],
+  bike:    ['#Moto', '#Scrambler', '#Café', '#Touring', '#Enduro', '#Supermot'],
+  van:     ['#Vanlife', '#Camping', '#RoadTrip', '#Conversion', '#DIY'],
+  truck:   ['#Pickup', '#4x4', '#OffRoad', '#Lifted', '#Utilitaire'],
+  velo:    ['#Cycling', '#Gravel', '#MTB', '#Fixie', '#Vintage', '#Bikepacking'],
+  classic: ['#Classic', '#Vintage', '#Oldtimer', '#Restauration', '#Patine'],
+};
 
 function StepPhotos() {
   const photos = usePostStore((s) => s.photos);
@@ -152,17 +162,25 @@ function StepPhotos() {
 }
 
 function StepSpecs() {
-  const [type, setType] = useState('car');
-  const fields = [
-    { label: 'Marque', value: 'Nissan', placeholder: 'ex. Nissan' },
-    { label: 'Modèle', value: 'Silvia S15', placeholder: 'ex. Silvia S15' },
-    { label: 'Année', value: '2001', placeholder: '2001' },
-    { label: 'Cylindrée', value: '2.0L Turbo', placeholder: '' },
-    { label: 'Puissance', value: '280 ch', placeholder: '' },
-    { label: 'Plaque (optionnel)', value: '', placeholder: 'Pour le badge pays' },
-  ];
+  const type            = usePostStore((s) => s.type);
+  const setType         = usePostStore((s) => s.setType);
+  const brand           = usePostStore((s) => s.brand);
+  const setBrand        = usePostStore((s) => s.setBrand);
+  const model           = usePostStore((s) => s.model);
+  const setModel        = usePostStore((s) => s.setModel);
+  const year            = usePostStore((s) => s.year);
+  const setYear         = usePostStore((s) => s.setYear);
+  const displacement    = usePostStore((s) => s.displacement);
+  const setDisplacement = usePostStore((s) => s.setDisplacement);
+  const power           = usePostStore((s) => s.power);
+  const setPower        = usePostStore((s) => s.setPower);
+
+  const inputStyle = { height: 48, borderRadius: 14, paddingHorizontal: 16, backgroundColor: '#111118', borderWidth: 1, borderColor: '#1E1E2E', color: '#F1F0FF', fontFamily: 'Inter_400Regular', fontSize: 14 } as const;
+  const labelStyle = { color: '#9594B5', fontFamily: 'Inter_600SemiBold', fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 } as const;
+
   return (
     <View>
+      {/* Grille 2×3 types de véhicule */}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
         {VEHICLE_TYPES.map((t) => (
           <Pressable
@@ -175,77 +193,183 @@ function StepSpecs() {
           </Pressable>
         ))}
       </View>
-      {fields.map((f) => (
-        <View key={f.label} style={{ marginBottom: 14 }}>
-          <Text style={{ color: '#9594B5', fontFamily: 'Inter_600SemiBold', fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>{f.label}</Text>
-          <View style={{ height: 48, borderRadius: 14, paddingHorizontal: 16, backgroundColor: '#111118', borderWidth: 1, borderColor: '#1E1E2E', justifyContent: 'center' }}>
-            <Text style={{ color: f.value ? '#F1F0FF' : '#5C5B78', fontFamily: 'Inter_400Regular', fontSize: 14 }}>{f.value || f.placeholder}</Text>
-          </View>
-        </View>
-      ))}
+      {/* Champs specs connectés au store */}
+      <View style={{ marginBottom: 14 }}>
+        <Text style={labelStyle}>Marque</Text>
+        <TextInput value={brand} onChangeText={setBrand} placeholder="ex. Nissan" placeholderTextColor="#5C5B78" style={inputStyle} />
+      </View>
+      <View style={{ marginBottom: 14 }}>
+        <Text style={labelStyle}>Modèle</Text>
+        <TextInput value={model} onChangeText={setModel} placeholder="ex. Silvia S15" placeholderTextColor="#5C5B78" style={inputStyle} />
+      </View>
+      <View style={{ marginBottom: 14 }}>
+        <Text style={labelStyle}>Année</Text>
+        <TextInput
+          value={year !== null ? String(year) : ''}
+          onChangeText={(text) => setYear(text.trim() ? parseInt(text, 10) : null)}
+          placeholder="2001"
+          placeholderTextColor="#5C5B78"
+          keyboardType="numeric"
+          maxLength={4}
+          style={inputStyle}
+        />
+      </View>
+      <View style={{ marginBottom: 14 }}>
+        <Text style={labelStyle}>Cylindrée</Text>
+        <TextInput value={displacement} onChangeText={setDisplacement} placeholder="ex. 2.0L Turbo" placeholderTextColor="#5C5B78" style={inputStyle} />
+      </View>
+      <View style={{ marginBottom: 24 }}>
+        <Text style={labelStyle}>Puissance</Text>
+        <TextInput
+          value={power !== null ? String(power) : ''}
+          onChangeText={(text) => setPower(text.trim() ? parseInt(text, 10) : null)}
+          placeholder="ex. 280"
+          placeholderTextColor="#5C5B78"
+          keyboardType="numeric"
+          style={inputStyle}
+        />
+      </View>
+      {/* Suggestions de tags basées sur le type — visuel uniquement */}
+      <Text style={{ color: '#9594B5', fontFamily: 'Inter_600SemiBold', fontSize: 11, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>Suggestions</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+        {(TAG_SUGGESTIONS_BY_TYPE[type] ?? []).map((tag) => <KaraTag key={tag}>{tag}</KaraTag>)}
+      </View>
     </View>
   );
 }
 
 function StepDescription() {
-  const desc = 'Build daily-track. Suspension Ohlins, échappement Tomei, kit BN Sports. 280ch sur banc.';
-  const activeTags = ['#JDM', '#Turbo', '#SR20', '#Drift', '#BNSports'];
+  const description    = usePostStore((s) => s.description);
+  const setDescription = usePostStore((s) => s.setDescription);
+  const tags           = usePostStore((s) => s.tags);
+  const addTag         = usePostStore((s) => s.addTag);
+  const removeTag      = usePostStore((s) => s.removeTag);
+  const type           = usePostStore((s) => s.type);
+  const [tagInput, setTagInput] = useState('');
+
+  const suggestions = (TAG_SUGGESTIONS_BY_TYPE[type] ?? []).filter((t) => !tags.includes(t));
+
+  function handleAddTag() {
+    const normalized = '#' + tagInput.replace(/^#/, '').trim();
+    if (normalized !== '#') addTag(normalized);
+    setTagInput('');
+  }
+
   return (
     <View>
-      <View style={{ borderRadius: 16, padding: 16, minHeight: 140, backgroundColor: '#111118', borderWidth: 1, borderColor: '#1E1E2E', position: 'relative' }}>
-        <Text style={{ color: '#F1F0FF', fontFamily: 'Inter_400Regular', fontSize: 14, lineHeight: 21 }}>{desc}</Text>
-        <Text style={{ position: 'absolute', bottom: 10, right: 14, color: '#5C5B78', fontFamily: 'Inter_400Regular', fontSize: 10 }}>{desc.length} / 300</Text>
+      {/* Textarea description avec compteur */}
+      <View style={{ borderRadius: 16, backgroundColor: '#111118', borderWidth: 1, borderColor: '#1E1E2E', position: 'relative' }}>
+        <TextInput
+          value={description}
+          onChangeText={(t) => setDescription(t.slice(0, 300))}
+          multiline
+          maxLength={300}
+          placeholder="Décris ton build..."
+          placeholderTextColor="#5C5B78"
+          style={{ color: '#F1F0FF', fontFamily: 'Inter_400Regular', fontSize: 14, lineHeight: 21, padding: 16, minHeight: 120, textAlignVertical: 'top' }}
+        />
+        <Text style={{ position: 'absolute', bottom: 10, right: 14, color: '#5C5B78', fontFamily: 'Inter_400Regular', fontSize: 10 }}>{description.length} / 300</Text>
       </View>
+      {/* Tags actifs avec bouton × pour supprimer */}
       <Text style={{ color: '#9594B5', fontFamily: 'Inter_600SemiBold', fontSize: 11, letterSpacing: 1, textTransform: 'uppercase', marginTop: 22, marginBottom: 10 }}>Tags</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-        {activeTags.map((t) => (
-          <View key={t} style={{ height: 32, paddingHorizontal: 12, borderRadius: 999, backgroundColor: 'rgba(124,58,237,0.18)', borderWidth: 1, borderColor: 'rgba(124,58,237,0.35)', flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+        {tags.map((t) => (
+          <Pressable
+            key={t}
+            onPress={() => removeTag(t)}
+            style={{ height: 32, paddingHorizontal: 12, borderRadius: 999, backgroundColor: 'rgba(124,58,237,0.18)', borderWidth: 1, borderColor: 'rgba(124,58,237,0.35)', flexDirection: 'row', alignItems: 'center', gap: 4 }}
+          >
             <Text style={{ color: '#A78BFA', fontFamily: 'Inter_500Medium', fontSize: 13 }}>{t}</Text>
             <X size={12} color="#A78BFA" strokeWidth={2} />
-          </View>
+          </Pressable>
         ))}
-        <Pressable style={{ height: 32, paddingHorizontal: 12, borderRadius: 999, borderWidth: 1, borderColor: '#2A2A3D', borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ color: '#5C5B78', fontFamily: 'Inter_400Regular', fontSize: 13 }}>+ Ajouter</Text>
-        </Pressable>
+        {/* Saisie libre */}
+        <View style={{ height: 32, paddingHorizontal: 12, borderRadius: 999, borderWidth: 1, borderColor: '#2A2A3D', borderStyle: 'dashed', flexDirection: 'row', alignItems: 'center' }}>
+          <TextInput
+            value={tagInput}
+            onChangeText={setTagInput}
+            onSubmitEditing={handleAddTag}
+            returnKeyType="done"
+            placeholder="+ Ajouter"
+            placeholderTextColor="#5C5B78"
+            style={{ color: '#F1F0FF', fontFamily: 'Inter_400Regular', fontSize: 13, minWidth: 60 }}
+          />
+        </View>
       </View>
-      <Text style={{ color: '#9594B5', fontFamily: 'Inter_600SemiBold', fontSize: 11, letterSpacing: 1, textTransform: 'uppercase', marginTop: 22, marginBottom: 10 }}>Suggestions</Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-        {['#Stance', '#Track', '#Daily', '#OEM+', '#Rotary', '#Akrapovic'].map((t) => <KaraTag key={t}>{t}</KaraTag>)}
-      </View>
+      {/* Suggestions filtrées — masquées si liste vide */}
+      {suggestions.length > 0 && (
+        <>
+          <Text style={{ color: '#9594B5', fontFamily: 'Inter_600SemiBold', fontSize: 11, letterSpacing: 1, textTransform: 'uppercase', marginTop: 22, marginBottom: 10 }}>Suggestions</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+            {suggestions.map((t) => (
+              <Pressable key={t} onPress={() => addTag(t)}>
+                <KaraTag>{t}</KaraTag>
+              </Pressable>
+            ))}
+          </View>
+        </>
+      )}
     </View>
   );
 }
 
 function StepLocation() {
+  const city       = usePostStore((s) => s.city);
+  const setCity    = usePostStore((s) => s.setCity);
+  const precise    = usePostStore((s) => s.precise);
+  const setPrecise = usePostStore((s) => s.setPrecise);
+  const photos     = usePostStore((s) => s.photos);
+  const brand      = usePostStore((s) => s.brand);
+  const model      = usePostStore((s) => s.model);
+
+  const vehicleName = brand && model ? `${brand} ${model}` : 'Nissan Silvia S15';
+
   return (
     <View>
+      {/* Carte visuelle statique */}
       <View style={{ borderRadius: 18, height: 200, backgroundColor: '#111118', borderWidth: 1, borderColor: '#1E1E2E', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
         <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: 'rgba(124,58,237,0.2)', alignItems: 'center', justifyContent: 'center' }}>
           <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: '#7C3AED', shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.7, shadowRadius: 12, elevation: 8 }} />
         </View>
         <Text style={{ position: 'absolute', bottom: 12, left: 14, color: '#9594B5', fontFamily: 'Inter_500Medium', fontSize: 10 }}>45.764 N · 4.835 E</Text>
       </View>
+      {/* Champ Ville de rattachement */}
       <View style={{ marginTop: 16 }}>
         <Text style={{ color: '#9594B5', fontFamily: 'Inter_600SemiBold', fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>Ville de rattachement</Text>
         <View style={{ height: 48, borderRadius: 14, paddingHorizontal: 16, backgroundColor: '#111118', borderWidth: 1, borderColor: '#1E1E2E', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <MapPin size={16} color="#A78BFA" strokeWidth={1.6} />
-          <Text style={{ color: '#F1F0FF', fontFamily: 'Inter_400Regular', fontSize: 14 }}>Lyon, 69</Text>
+          <TextInput
+            value={city}
+            onChangeText={setCity}
+            placeholder="Lyon, 69"
+            placeholderTextColor="#5C5B78"
+            style={{ flex: 1, color: '#F1F0FF', fontFamily: 'Inter_400Regular', fontSize: 14 }}
+          />
         </View>
       </View>
+      {/* Toggle Position précise */}
       <View style={{ marginTop: 18, padding: 16, borderRadius: 16, backgroundColor: '#111118', borderWidth: 1, borderColor: '#1E1E2E', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <View>
           <Text style={{ fontFamily: 'Inter_600SemiBold', fontSize: 14, color: '#F1F0FF' }}>Position précise</Text>
           <Text style={{ fontSize: 12, color: '#9594B5', marginTop: 2, fontFamily: 'Inter_400Regular' }}>Visible à 200m près sur la map</Text>
         </View>
-        <View style={{ width: 48, height: 28, borderRadius: 999, backgroundColor: '#2A2A3D', padding: 3, justifyContent: 'center' }}>
-          <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: '#fff' }} />
-        </View>
+        <Switch
+          value={precise}
+          onValueChange={setPrecise}
+          thumbColor={precise ? '#7C3AED' : '#fff'}
+          trackColor={{ false: '#2A2A3D', true: 'rgba(124,58,237,0.4)' }}
+        />
       </View>
+      {/* Aperçu card — photo réelle si dispo, sinon placeholder */}
       <Text style={{ color: '#9594B5', fontFamily: 'Inter_600SemiBold', fontSize: 11, letterSpacing: 1, textTransform: 'uppercase', marginTop: 18, marginBottom: 10 }}>Aperçu de la card</Text>
       <View style={{ borderRadius: 18, overflow: 'hidden', height: 180, borderWidth: 1, borderColor: '#1E1E2E', position: 'relative' }}>
-        <KaraPhoto tone="cyan-tokyo" label="NISSAN S15 · MIDNIGHT" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+        {photos[0] ? (
+          <Image source={{ uri: photos[0] }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+        ) : (
+          <KaraPhoto tone="cyan-tokyo" label="NISSAN S15 · MIDNIGHT" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+        )}
         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 14, backgroundColor: 'rgba(10,10,15,0.8)' }}>
-          <Text style={{ color: '#fff', fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18 }}>Nissan Silvia S15</Text>
+          <Text style={{ color: '#fff', fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18 }}>{vehicleName}</Text>
           <Text style={{ color: '#A78BFA', fontSize: 10, fontFamily: 'Inter_500Medium', letterSpacing: 0.8, marginTop: 2 }}>2001 · 2.0T · 280CH · LYON 69</Text>
         </View>
       </View>
@@ -258,8 +382,9 @@ export default function PostScreen() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const photos = usePostStore((s) => s.photos);
+  const { mutate: createVehicle, isPending, uploadProgress } = useCreateVehicle();
 
-  const isContinueDisabled = step === 0 && photos.length === 0;
+  const isContinueDisabled = (step === 0 && photos.length === 0) || isPending;
 
   return (
     <View className="flex-1 bg-kara-bg">
@@ -310,7 +435,26 @@ export default function PostScreen() {
           </Pressable>
         )}
         <Pressable
-          onPress={() => step < 3 ? setStep(step + 1) : router.replace('/(tabs)')}
+          onPress={() => {
+            if (step < 3) {
+              setStep(step + 1);
+            } else {
+              const store = usePostStore.getState();
+              createVehicle({
+                photos: store.photos,
+                type: store.type,
+                brand: store.brand,
+                model: store.model,
+                year: store.year,
+                displacement: store.displacement,
+                power: store.power,
+                description: store.description,
+                tags: store.tags,
+                city: store.city,
+                precise: store.precise,
+              });
+            }
+          }}
           disabled={isContinueDisabled}
           style={[
             { flex: 1, height: 52, borderRadius: 999, backgroundColor: '#7C3AED', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
@@ -318,9 +462,11 @@ export default function PostScreen() {
           ]}
         >
           <Text style={{ color: '#fff', fontFamily: 'Inter_600SemiBold', fontSize: 15 }}>
-            {step === 3 ? 'Publier le build' : 'Continuer'}
+            {step === 3 && isPending
+              ? `${uploadProgress + 1} / ${photos.length} photos uploadées...`
+              : step === 3 ? 'Publier le build' : 'Continuer'}
           </Text>
-          <ArrowRight size={18} color="#fff" strokeWidth={2.25} />
+          {!(step === 3 && isPending) && <ArrowRight size={18} color="#fff" strokeWidth={2.25} />}
         </Pressable>
       </View>
     </View>

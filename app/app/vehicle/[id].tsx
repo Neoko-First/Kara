@@ -26,6 +26,7 @@ const VEHICLE = {
   description:
     'Build daily-track. Suspension Ohlins DFV, échappement Tomei, kit BN Sports. 280ch sur banc. Spotté à Lurcy-Lévis le mois dernier — la suite arrive.',
   tone: 'cyan-tokyo' as const,
+  src: 'https://images.unsplash.com/photo-1542362567-b07e54358753?w=1000&q=80',
   label: 'NISSAN SILVIA S15 · 1/6',
   photos: 6,
   specGrid: [
@@ -54,6 +55,7 @@ export default function VehicleDetailScreen() {
         <View style={{ position: 'relative', height: 380 }}>
           <KaraPhoto
             tone={VEHICLE.tone}
+            src={VEHICLE.src}
             label={VEHICLE.label}
             style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
           />

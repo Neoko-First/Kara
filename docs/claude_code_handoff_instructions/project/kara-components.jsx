@@ -140,13 +140,32 @@ const KaraAvatar = ({ size = 36, tone = 'violet-dusk', initial = 'K', online = f
   </div>
 );
 
-// Photo placeholder (used everywhere instead of real images)
-const KaraPhoto = ({ tone = 'violet-dusk', label, style = {}, children, className = '' }) => (
-  <div className={`kara-photo ${className}`} data-tone={tone} style={style}>
-    {label && <div className="kara-photo-label">{label}</div>}
-    {children}
-  </div>
-);
+// Real Unsplash imagery mapped to each tone (curated automotive shots)
+const KARA_PHOTOS = {
+  'cyan-tokyo':     'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80', // night sports car neon
+  'amber-stance':   'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=900&q=80', // golden hour rs
+  'track-magenta':  'https://images.unsplash.com/photo-1542362567-b07e54358753?w=900&q=80',   // track / drift
+  'crimson-rwd':    'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=900&q=80', // red sport
+  'violet-dusk':    'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=900&q=80', // bmw dusk
+  'garage-night':   'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=900&q=80', // garage night
+  'emerald-build':  'https://images.unsplash.com/photo-1611821064430-0d40291d0f0b?w=900&q=80', // green build
+};
+
+// Photo with real image + dark overlay for legibility
+const KaraPhoto = ({ tone = 'violet-dusk', label, style = {}, children, className = '', src }) => {
+  const url = src || KARA_PHOTOS[tone];
+  return (
+    <div className={`kara-photo ${className}`} data-tone={tone} style={{
+      ...style,
+      backgroundImage: url ? `url("${url}")` : undefined,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }}>
+      {label && <div className="kara-photo-label" style={{ background: 'rgba(0,0,0,0.45)', padding: '4px 8px', borderRadius: 4, backdropFilter: 'blur(4px)' }}>{label}</div>}
+      {children}
+    </div>
+  );
+};
 
 // Bottom Tab Bar (the canonical 5-tab nav)
 const KaraTabBar = ({ active = 'discover', onChange = () => {} }) => {

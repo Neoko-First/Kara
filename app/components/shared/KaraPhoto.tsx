@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ViewStyle } from 'react-native';
+import { View, Text, ViewStyle, ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export type PhotoTone =
@@ -10,6 +10,17 @@ export type PhotoTone =
   | 'cyan-tokyo'
   | 'crimson-rwd'
   | 'emerald-build';
+
+// Mapping tone → photo Unsplash (shots auto-curatés)
+export const KARA_PHOTOS: Record<PhotoTone, string> = {
+  'cyan-tokyo':     'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80',
+  'amber-stance':   'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=900&q=80',
+  'track-magenta':  'https://images.unsplash.com/photo-1542362567-b07e54358753?w=900&q=80',
+  'crimson-rwd':    'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=900&q=80',
+  'violet-dusk':    'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=900&q=80',
+  'garage-night':   'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=900&q=80',
+  'emerald-build':  'https://images.unsplash.com/photo-1611821064430-0d40291d0f0b?w=900&q=80',
+};
 
 const TONE_COLORS: Record<PhotoTone, readonly [string, string, ...string[]]> = {
   'violet-dusk':   ['#A78BFA33', '#7C3AED66', '#2a1858', '#0a0a0f'],
@@ -26,9 +37,49 @@ interface Props {
   label?: string;
   style?: ViewStyle;
   children?: React.ReactNode;
+  /** URL directe — prioritaire sur le mapping KARA_PHOTOS[tone] */
+  src?: string;
 }
 
-export function KaraPhoto({ tone = 'violet-dusk', label, style, children }: Props) {
+const LabelOverlay = ({ label }: { label: string }) => (
+  <View
+    style={{
+      position: 'absolute',
+      top: 0, left: 0, right: 0, bottom: 0,
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    <Text
+      style={{
+        color: 'rgba(255,255,255,0.65)',
+        fontSize: 9,
+        letterSpacing: 2,
+        fontFamily: 'Inter_500Medium',
+        textTransform: 'uppercase',
+      }}
+    >
+      {label}
+    </Text>
+  </View>
+);
+
+export function KaraPhoto({ tone = 'violet-dusk', label, style, children, src }: Props) {
+  const imageUrl = src || KARA_PHOTOS[tone];
+
+  if (imageUrl) {
+    return (
+      <ImageBackground
+        source={{ uri: imageUrl }}
+        style={[{ overflow: 'hidden' }, style]}
+        resizeMode="cover"
+      >
+        {label && <LabelOverlay label={label} />}
+        {children}
+      </ImageBackground>
+    );
+  }
+
   const colors = TONE_COLORS[tone] as readonly [string, string, ...string[]];
   return (
     <LinearGradient

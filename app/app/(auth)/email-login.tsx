@@ -62,6 +62,7 @@ export default function EmailLoginScreen() {
         });
         if (error) {
           Toast.show({ type: 'error', text1: handleAuthError(error) });
+          setMode('login');
         } else if (!data.session) {
           // Supabase email confirmation activée — session non créée immédiatement
           Toast.show({

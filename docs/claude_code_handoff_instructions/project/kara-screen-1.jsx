@@ -164,9 +164,9 @@ const KaraLogoMark = ({ size = 32, color = 'var(--kara-primary)', bg = false }) 
 // Discover Feed
 // ─────────────────────────────────────────────────────────────
 const VEHICLE_DATA = [
-  { id: 1, owner: 'aki_drift', city: 'Lyon, 69', name: 'Nissan Silvia S15', specs: 'SR20DET · 280ch · RWD', tags: ['#JDM','#Turbo','#Stance','#Drift'], type: 'Voiture', tone: 'cyan-tokyo', label: 'NISSAN S15 · MIDNIGHT', country: '🇯🇵', photos: 6, photoIdx: 1, online: true },
-  { id: 2, owner: 'maxprt_rs', city: 'Marseille, 13', name: 'Audi RS3 8V', specs: '2.5 TFSI · 400ch · AWD', tags: ['#Stance','#Daily','#OEM+','#Track'], type: 'Voiture', tone: 'amber-stance', label: 'AUDI RS3 · GOLDEN HOUR', country: '🇩🇪', photos: 4, photoIdx: 1 },
-  { id: 3, owner: 'duc_panigale', city: 'Nice, 06', name: 'Ducati Panigale V4', specs: '1103cc · 214ch · 198kg', tags: ['#Track','#Italian','#V4','#Akrapovic'], type: 'Moto', tone: 'crimson-rwd', label: 'DUCATI V4 · ASCARI', country: '🇮🇹', photos: 5, photoIdx: 2 },
+  { id: 1, owner: 'aki_drift', city: 'Lyon, 69', name: 'Nissan Silvia S15', specs: 'SR20DET · 280ch · RWD', tags: ['#JDM','#Turbo','#Stance','#Drift'], type: 'Voiture', tone: 'cyan-tokyo', label: '', country: '🇯🇵', photos: 6, photoIdx: 1, online: true, src: 'https://images.unsplash.com/photo-1542362567-b07e54358753?w=1000&q=80' },
+  { id: 2, owner: 'maxprt_rs', city: 'Marseille, 13', name: 'Audi RS3 8V', specs: '2.5 TFSI · 400ch · AWD', tags: ['#Stance','#Daily','#OEM+','#Track'], type: 'Voiture', tone: 'amber-stance', label: '', country: '🇩🇪', photos: 4, photoIdx: 1, src: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=1000&q=80' },
+  { id: 3, owner: 'duc_panigale', city: 'Nice, 06', name: 'Ducati Panigale V4', specs: '1103cc · 214ch · 198kg', tags: ['#Track','#Italian','#V4','#Akrapovic'], type: 'Moto', tone: 'crimson-rwd', label: '', country: '🇮🇹', photos: 5, photoIdx: 2, src: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=1000&q=80' },
 ];
 
 const KaraDiscover = ({ onTab = () => {} }) => {
@@ -212,7 +212,7 @@ const KaraDiscover = ({ onTab = () => {} }) => {
               borderRadius: 28, overflow: 'hidden', position: 'relative',
               border: '1px solid var(--kara-border)',
             }}>
-              <KaraPhoto tone={v.tone} label={v.label} style={{ position: 'absolute', inset: 0 }} />
+              <KaraPhoto tone={v.tone} src={v.src} style={{ position: 'absolute', inset: 0 }} />
 
               {/* Top corners */}
               <div style={{ position: 'absolute', top: 14, left: 14, right: 14, display: 'flex', justifyContent: 'space-between', zIndex: 4 }}>
