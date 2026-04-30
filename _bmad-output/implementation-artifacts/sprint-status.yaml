@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-28
-last_updated: 2026-04-29
+last_updated: 2026-04-30 (3-1 → review)
 project: Kara
 project_key: NOKEY
 tracking_system: file-system
@@ -44,21 +44,21 @@ story_location: _bmad-output/implementation-artifacts
 development_status:
   # ── Epic 1: Foundation & Authentification ──────────────────────────────
   epic-1: in-progress
-  1-1-setup-infrastructure-configuration-de-base: review
-  1-2-schema-de-base-de-donnees-migrations-supabase: review
-  1-3-ecran-onboarding-3-slides: review
-  1-4-authentification-oauth-routing-guard: review
+  1-1-setup-infrastructure-configuration-de-base: done
+  1-2-schema-de-base-de-donnees-migrations-supabase: done
+  1-3-ecran-onboarding-3-slides: done
+  1-4-authentification-oauth-routing-guard: done
   epic-1-retrospective: optional
 
   # ── Epic 2: Feed Discover ───────────────────────────────────────────────
   epic-2: in-progress
-  2-1-feed-discover-structure-scroll-snap-donnees-paginees: review
-  2-2-vehiclecard-visuel-complet-carousel-interne: backlog
+  2-1-feed-discover-structure-scroll-snap-donnees-paginees: done
+  2-2-vehiclecard-visuel-complet-carousel-interne: done
   epic-2-retrospective: optional
 
   # ── Epic 3: Création de véhicule ────────────────────────────────────────
   epic-3: backlog
-  3-1-stepper-creation-vehicule-etape-1-photos: backlog
+  3-1-stepper-creation-vehicule-etape-1-photos: done
   3-2-stepper-creation-vehicule-etapes-2-3-4: backlog
   3-3-pipeline-upload-publication-du-vehicule: backlog
   epic-3-retrospective: optional

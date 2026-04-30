@@ -149,6 +149,7 @@ export default function LoginScreen() {
           </Pressable>
 
           <Pressable
+            onPress={() => router.push('/(auth)/email-login')}
             style={{
               height: 44,
               flexDirection: 'row',

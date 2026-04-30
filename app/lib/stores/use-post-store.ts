@@ -17,6 +17,7 @@ interface PostStore {
   city: string;
   precise: boolean;
   // Actions
+  setPhotos: (photos: string[]) => void;
   reset: () => void;
 }
 
@@ -36,5 +37,6 @@ const INITIAL_STATE = {
 
 export const usePostStore = create<PostStore>((set) => ({
   ...INITIAL_STATE,
+  setPhotos: (photos) => set({ photos }),
   reset: () => set(INITIAL_STATE),
 }));
