@@ -88,7 +88,7 @@ export default function DiscoverScreen() {
   }
 
   return (
-    <View className="flex-1 bg-kara-bg pt-14 pb-4">
+    <View className="flex-1 bg-kara-bg pt-36 pb-4">
       {/* Header flottant — au-dessus du FlatList */}
       <View
         style={{

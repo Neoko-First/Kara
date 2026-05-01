@@ -2,9 +2,11 @@ import { createClient } from "@supabase/supabase-js";
 import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 
-// Sur le web (Expo Web / Metro web), ExpoSecureStore n'a pas de module natif
-// (ExpoSecureStore.web.js retourne {}). On replie sur localStorage.
-// Sur iOS/Android, SecureStore chiffré est obligatoire pour les tokens auth.
+// Sur le web (Expo Web / Metro web), ExpoSecureStore n'a pas de module natif.
+// Sur iOS/Android, les tokens OAuth dépassent souvent la limite de 2048 bytes de
+// SecureStore — on découpe la valeur en chunks de 1900 bytes stockés séparément.
+const CHUNK_SIZE = 1900;
+
 const ExpoSecureStoreAdapter =
   Platform.OS === "web"
     ? {
@@ -22,10 +24,48 @@ const ExpoSecureStoreAdapter =
         },
       }
     : {
-        getItem: (key: string) => SecureStore.getItemAsync(key),
-        setItem: (key: string, value: string) =>
-          SecureStore.setItemAsync(key, value),
-        removeItem: (key: string) => SecureStore.deleteItemAsync(key),
+        getItem: async (key: string): Promise<string | null> => {
+          const chunkCount = await SecureStore.getItemAsync(`${key}.chunks`);
+          if (chunkCount === null) {
+            // Compatibilité : tentative de lecture comme valeur simple (ancien format)
+            return SecureStore.getItemAsync(key);
+          }
+          const total = parseInt(chunkCount, 10);
+          const parts: string[] = [];
+          for (let i = 0; i < total; i++) {
+            const chunk = await SecureStore.getItemAsync(`${key}.${i}`);
+            if (chunk === null) return null;
+            parts.push(chunk);
+          }
+          return parts.join("");
+        },
+        setItem: async (key: string, value: string): Promise<void> => {
+          if (value.length <= CHUNK_SIZE) {
+            await SecureStore.setItemAsync(key, value);
+            await SecureStore.deleteItemAsync(`${key}.chunks`);
+            return;
+          }
+          const chunks: string[] = [];
+          for (let i = 0; i < value.length; i += CHUNK_SIZE) {
+            chunks.push(value.slice(i, i + CHUNK_SIZE));
+          }
+          for (let i = 0; i < chunks.length; i++) {
+            await SecureStore.setItemAsync(`${key}.${i}`, chunks[i]);
+          }
+          await SecureStore.setItemAsync(`${key}.chunks`, String(chunks.length));
+          await SecureStore.deleteItemAsync(key);
+        },
+        removeItem: async (key: string): Promise<void> => {
+          const chunkCount = await SecureStore.getItemAsync(`${key}.chunks`);
+          if (chunkCount !== null) {
+            const total = parseInt(chunkCount, 10);
+            for (let i = 0; i < total; i++) {
+              await SecureStore.deleteItemAsync(`${key}.${i}`);
+            }
+            await SecureStore.deleteItemAsync(`${key}.chunks`);
+          }
+          await SecureStore.deleteItemAsync(key);
+        },
       };
 
 export const supabase = createClient(
