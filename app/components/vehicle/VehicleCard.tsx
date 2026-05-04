@@ -23,6 +23,8 @@ import { KaraBadge } from '@/components/shared/KaraBadge';
 import { KaraButton } from '@/components/shared/KaraButton';
 import { VehiclePhotoCarousel } from './VehiclePhotoCarousel';
 import { VehicleWithRelations } from '@/lib/hooks/use-vehicles';
+import { useFollow } from '@/lib/hooks/use-follow';
+import { useAuthStore } from '@/lib/stores/use-auth-store';
 
 // Mapping code pays ISO 3166-1 alpha-2 → emoji drapeau
 const COUNTRY_EMOJI: Record<string, string> = {
@@ -38,9 +40,12 @@ const TYPE_LABEL: Record<string, string> = {
 };
 
 export function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelations; cardHeight: number }) {
-  const [following, setFollowing] = useState(false);
   const [photoIdx, setPhotoIdx] = useState(0);
   const router = useRouter();
+  const currentUserId = useAuthStore((s) => s.user?.id);
+  const ownerId = vehicle.profiles?.id ?? vehicle.owner_id;
+  const isOwnVehicle = currentUserId === ownerId;
+  const { isFollowing, toggle, isPending } = useFollow({ targetId: ownerId, targetType: 'profile' });
   // cardWidth = screenWidth - (paddingHorizontal 12 * 2) du Pressable dans index.tsx
   const { width: screenWidth } = useWindowDimensions();
   const cardWidth = screenWidth - 24;
@@ -219,8 +224,9 @@ export function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelat
             zIndex: 3,
           }}
         >
-          {/* Ligne propriétaire */}
-          <View
+          {/* Ligne propriétaire — Pressable pour naviguer vers le profil */}
+          <Pressable
+            onPress={() => router.push(`/user/${ownerId}`)}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -257,7 +263,7 @@ export function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelat
                 </Text>
               </View>
             </View>
-          </View>
+          </Pressable>
 
           {/* Nom véhicule — font-display bold (UX-DR2) */}
           <Text
@@ -299,22 +305,25 @@ export function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelat
 
           {/* Boutons Suivre + Message */}
           <View style={{ flexDirection: 'row', gap: 8 }}>
-            <KaraButton
-              variant={following ? 'secondary' : 'primary'}
-              size="md"
-              className="flex-1"
-              onPress={() => setFollowing(!following)}
-            >
-              <Text
-                style={{
-                  color: '#fff',
-                  fontFamily: 'Inter_600SemiBold',
-                  fontSize: 15,
-                }}
+            {!isOwnVehicle && (
+              <KaraButton
+                variant={isFollowing ? 'secondary' : 'primary'}
+                size="md"
+                style={{ flex: 1 }}
+                onPress={toggle}
+                disabled={isPending}
               >
-                {following ? '✓ Abonné' : 'Suivre'}
-              </Text>
-            </KaraButton>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'Inter_600SemiBold',
+                    fontSize: 15,
+                  }}
+                >
+                  {isFollowing ? '✓ Abonné' : 'Suivre'}
+                </Text>
+              </KaraButton>
+            )}
             <Pressable
               style={{
                 width: 48,

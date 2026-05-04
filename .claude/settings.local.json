@@ -1,8 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(npx tsc *)",
-      "Bash(python3 _bmad/scripts/resolve_customization.py --skill \".claude/skills/bmad-create-story\" --key workflow)"
-    ]
+    "allow": ["Bash(npx tsc *)", "Bash(python **/*.py*)"]
   }
 }

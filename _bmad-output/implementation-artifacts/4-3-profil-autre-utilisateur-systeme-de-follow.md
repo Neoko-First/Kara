@@ -1,6 +1,6 @@
 # Story 4.3: Profil d'un autre utilisateur & système de follow
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -23,42 +23,42 @@ So that je peux m'abonner aux builds qui m'inspirent.
 
 ## Tasks / Subtasks
 
-- [ ] Modifier `app/lib/hooks/use-profile.ts` — ajouter option `autoCreate` (AC: 9)
-  - [ ] Ajouter paramètre optionnel `{ autoCreate?: boolean }` (default `true`) à `useProfile`
-  - [ ] Si `autoCreate: false` et profil absent : `throw new Error('Profil introuvable')` au lieu d'insérer
-  - [ ] Aucun changement de comportement pour `autoCreate: true` (comportement existant préservé)
+- [x] Modifier `app/lib/hooks/use-profile.ts` — ajouter option `autoCreate` (AC: 9)
+  - [x] Ajouter paramètre optionnel `{ autoCreate?: boolean }` (default `true`) à `useProfile`
+  - [x] Si `autoCreate: false` et profil absent : `throw new Error('Profil introuvable')` au lieu d'insérer
+  - [x] Aucun changement de comportement pour `autoCreate: true` (comportement existant préservé)
 
-- [ ] Créer `app/lib/hooks/use-follow.ts` (AC: 3, 4, 5, 6, 8)
-  - [ ] Définir interface `UseFollowParams` : `{ targetId: string; targetType: 'profile' | 'vehicle' }`
-  - [ ] Implémenter `useFollow({ targetId, targetType })` qui retourne `{ isFollowing: boolean; toggle: () => void; isPending: boolean }`
-  - [ ] Query de statut : `useQuery` avec key `['follow', currentUserId, targetId, targetType]` → `SELECT count` dans `follows` où `follower_id = currentUserId AND target_id = targetId AND target_type = targetType` ; retourne `(count ?? 0) > 0`
-  - [ ] Mutation : si `isFollowing` → DELETE ; sinon → INSERT `{ follower_id: currentUserId, target_id: targetId, target_type: targetType }`
-  - [ ] `onSuccess` : `queryClient.setQueryData(['follow', currentUserId, targetId, targetType], !isFollowing)` + si `targetType === 'profile'` → `queryClient.invalidateQueries({ queryKey: ['profile', targetId] })`
-  - [ ] `onError` : toast via `handleSupabaseError` ou message générique
-  - [ ] `enabled: !!currentUserId && !!targetId`
+- [x] Créer `app/lib/hooks/use-follow.ts` (AC: 3, 4, 5, 6, 8)
+  - [x] Définir interface `UseFollowParams` : `{ targetId: string; targetType: 'profile' | 'vehicle' }`
+  - [x] Implémenter `useFollow({ targetId, targetType })` qui retourne `{ isFollowing: boolean; toggle: () => void; isPending: boolean }`
+  - [x] Query de statut : `useQuery` avec key `['follow', currentUserId, targetId, targetType]` → `SELECT count` dans `follows` où `follower_id = currentUserId AND target_id = targetId AND target_type = targetType` ; retourne `(count ?? 0) > 0`
+  - [x] Mutation : si `isFollowing` → DELETE ; sinon → INSERT `{ follower_id: currentUserId, target_id: targetId, target_type: targetType }`
+  - [x] `onSuccess` : `queryClient.setQueryData(['follow', currentUserId, targetId, targetType], !isFollowing)` + si `targetType === 'profile'` → `queryClient.invalidateQueries({ queryKey: ['profile', targetId] })`
+  - [x] `onError` : toast via `handleSupabaseError` ou message générique
+  - [x] `enabled: !!currentUserId && !!targetId`
 
-- [ ] Créer `app/app/user/[id].tsx` (AC: 1, 2, 3, 4, 5, 6, 7, 9)
-  - [ ] Récupérer `id` via `useLocalSearchParams<{ id: string }>()`
-  - [ ] Récupérer `currentUserId` via `useAuthStore((s) => s.user?.id)`
-  - [ ] Appeler `useProfile(id, { autoCreate: false })`
-  - [ ] Appeler `useFollow({ targetId: id, targetType: 'profile' })` (désactivé si `id === currentUserId`)
-  - [ ] Loading state : `ActivityIndicator` centré
-  - [ ] Error state : message d'erreur si le profil n'existe pas
-  - [ ] Afficher couverture, avatar, identité, stats, tabs — même structure que `profile.tsx`
-  - [ ] Bouton "Suivre"/"Suivi" à la place de "Modifier" (masqué si `id === currentUserId`)
-  - [ ] Bouton `MoreHorizontal` (en haut à droite de la cover) → `Alert` avec "Signaler" et "Bloquer"
-  - [ ] Bouton back (`ChevronLeft`) en haut à gauche de la cover
-  - [ ] Onglet Favoris : état vide statique "Les favoris de @{username} apparaîtront ici"
+- [x] Créer `app/app/user/[id].tsx` (AC: 1, 2, 3, 4, 5, 6, 7, 9)
+  - [x] Récupérer `id` via `useLocalSearchParams<{ id: string }>()`
+  - [x] Récupérer `currentUserId` via `useAuthStore((s) => s.user?.id)`
+  - [x] Appeler `useProfile(id, { autoCreate: false })`
+  - [x] Appeler `useFollow({ targetId: id, targetType: 'profile' })` (désactivé si `id === currentUserId`)
+  - [x] Loading state : `ActivityIndicator` centré
+  - [x] Error state : message d'erreur si le profil n'existe pas
+  - [x] Afficher couverture, avatar, identité, stats, tabs — même structure que `profile.tsx`
+  - [x] Bouton "Suivre"/"Suivi" à la place de "Modifier" (masqué si `id === currentUserId`)
+  - [x] Bouton `MoreHorizontal` (en haut à droite de la cover) → `Alert` avec "Signaler" et "Bloquer"
+  - [x] Bouton back (`ChevronLeft`) en haut à gauche de la cover
+  - [x] Onglet Favoris : état vide statique "Les favoris de @{username} apparaîtront ici"
 
-- [ ] Modifier `app/components/vehicle/VehicleCard.tsx` (AC: 1, 8)
-  - [ ] Entourer avatar + pseudo + localisation d'un `Pressable` → `router.push('/user/' + (vehicle.profiles?.id ?? vehicle.owner_id))`
-  - [ ] Remplacer `useState(false)` + `setFollowing` par `useFollow({ targetId: vehicle.profiles?.id ?? vehicle.owner_id, targetType: 'profile' })`
-  - [ ] Le bouton "Suivre" utilise `isFollowing` pour le variant (`primary` si suivi, `secondary` si abonné) et appelle `toggle` en `onPress`
-  - [ ] Si `vehicle.profiles?.id === currentUserId` : masquer le bouton "Suivre" (on ne peut pas se suivre soi-même)
-  - [ ] Pendant `isPending` : désactiver le bouton "Suivre"
+- [x] Modifier `app/components/vehicle/VehicleCard.tsx` (AC: 1, 8)
+  - [x] Entourer avatar + pseudo + localisation d'un `Pressable` → `router.push('/user/' + (vehicle.profiles?.id ?? vehicle.owner_id))`
+  - [x] Remplacer `useState(false)` + `setFollowing` par `useFollow({ targetId: vehicle.profiles?.id ?? vehicle.owner_id, targetType: 'profile' })`
+  - [x] Le bouton "Suivre" utilise `isFollowing` pour le variant (`primary` si suivi, `secondary` si abonné) et appelle `toggle` en `onPress`
+  - [x] Si `vehicle.profiles?.id === currentUserId` : masquer le bouton "Suivre" (on ne peut pas se suivre soi-même)
+  - [x] Pendant `isPending` : désactiver le bouton "Suivre"
 
-- [ ] Vérification TypeScript (AC: 10)
-  - [ ] `cd app && npx tsc --noEmit` — zéro erreur
+- [x] Vérification TypeScript (AC: 10)
+  - [x] `cd app && npx tsc --noEmit` — zéro erreur
 
 ## Dev Notes
 
@@ -376,16 +376,24 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
-_(vide — story pas encore implémentée)_
+_(aucun blocage rencontré)_
 
 ### Completion Notes List
 
-_(vide)_
+- `use-profile.ts` : signature étendue avec `{ autoCreate?: boolean }` — comportement existant inchangé, option `false` lève une erreur propre sans tenter d'insérer via RLS.
+- `use-follow.ts` : hook créé avec query + mutation TanStack Query ; `useAuthStore.getState()` utilisé dans `mutationFn` (hors hook React) ; gestion du code `23505` via `handleSupabaseError`.
+- `app/user/[id].tsx` : structure visuelle identique à `profile.tsx`, bouton Suivre/Suivi conditionnel (`isOwnProfile`), menu ··· avec Alert, bouton back.
+- `VehicleCard.tsx` : ligne propriétaire wrappée dans `Pressable`, bouton Suivre branché sur `useFollow`, masqué si `isOwnVehicle`.
+- `npx tsc --noEmit` : aucune erreur.
 
 ### File List
 
-_(vide — à remplir pendant l'implémentation)_
+- app/lib/hooks/use-profile.ts (modifié)
+- app/lib/hooks/use-follow.ts (créé)
+- app/app/user/[id].tsx (créé)
+- app/components/vehicle/VehicleCard.tsx (modifié)
 
 ### Change Log
 
 - 2026-05-01 : Story créée (prête pour développement)
+- 2026-05-04 : Implémentation complète — use-profile autoCreate, use-follow, user/[id].tsx, VehicleCard follow réel. TypeScript OK. Status → review.

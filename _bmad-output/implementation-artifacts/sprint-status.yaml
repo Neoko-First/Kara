@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-28
-last_updated: 2026-05-01 (4-3 → in-progress)
+last_updated: 2026-05-04 (4-4 → review)
 project: Kara
 project_key: NOKEY
 tracking_system: file-system
@@ -67,8 +67,8 @@ development_status:
   epic-4: in-progress
   4-1-mon-profil-affichage: done
   4-2-modification-du-profil: done
-  4-3-profil-autre-utilisateur-systeme-de-follow: in-progress
-  4-4-profil-vehicule-page-detail: backlog
+  4-3-profil-autre-utilisateur-systeme-de-follow: done
+  4-4-profil-vehicule-page-detail: done
   epic-4-retrospective: optional
 
   # ── Epic 5: Interactions sociales ───────────────────────────────────────

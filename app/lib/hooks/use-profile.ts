@@ -18,7 +18,10 @@ export interface ProfileWithStats {
   followingCount: number;
 }
 
-export function useProfile(userId: string) {
+export function useProfile(
+  userId: string,
+  { autoCreate = true }: { autoCreate?: boolean } = {}
+) {
   return useQuery<ProfileWithStats, PostgrestError>({
     queryKey: ['profile', userId],
     queryFn: async () => {
@@ -51,8 +54,9 @@ export function useProfile(userId: string) {
 
       let profile = profileResult.data;
 
-      // Profil absent (trigger non exécuté à l'inscription) : création automatique
       if (!profile) {
+        if (!autoCreate) throw new Error('Profil introuvable');
+        // Profil absent (trigger non exécuté à l'inscription) : création automatique
         const { data: created, error: createErr } = await supabase
           .from('profiles')
           .insert({ id: userId, username: `user_${userId.replace(/-/g, '').slice(0, 12)}` })
