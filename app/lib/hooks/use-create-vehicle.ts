@@ -38,19 +38,20 @@ async function uploadPhoto(
   vehicleId: string,
   index: number
 ): Promise<string> {
-  const response = await fetch(uri);
-  const blob = await response.blob();
-  const storagePath = `${ownerId}/${vehicleId}/${index}.jpg`;
+  const arrayBuffer = await fetch(uri).then((r) => r.arrayBuffer());
+  const uploadPath = `${ownerId}/${vehicleId}/${index}.jpg`;
 
   const { error } = await supabase.storage
     .from('vehicles')
-    .upload(storagePath, blob, { contentType: 'image/jpeg', upsert: false });
+    .upload(uploadPath, arrayBuffer, { contentType: 'image/jpeg', upsert: false });
 
   if (error) {
+    console.log(error);
     throw new Error('Erreur lors de l\'upload de la photo.');
   }
 
-  return storagePath;
+  // Préfixe bucket inclus pour que buildImageUrl génère l'URL correcte
+  return `vehicles/${uploadPath}`;
 }
 
 export function useCreateVehicle() {

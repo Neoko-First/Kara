@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, ActivityIndicator, useWindowDimensions } from 'react-native';
+import {
+  View, Text, ScrollView, Pressable, ActivityIndicator, useWindowDimensions,
+  Modal, TextInput, KeyboardAvoidingView, Platform, FlatList,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
   ChevronLeft,
+  Heart,
   Share2,
   MoreHorizontal,
   Car,
   Bike,
+  MessageCircle,
 } from 'lucide-react-native';
 import { KaraBadge } from '@/components/shared/KaraBadge';
 import { KaraTag } from '@/components/shared/KaraTag';
@@ -18,7 +23,10 @@ import { VehicleSpecGrid } from '@/components/vehicle/VehicleSpecGrid';
 import { OwnerCard } from '@/components/profile/OwnerCard';
 import { useVehicle } from '@/lib/hooks/use-vehicle';
 import { useFollow } from '@/lib/hooks/use-follow';
+import { useLike } from '@/lib/hooks/use-like';
+import { useComments } from '@/lib/hooks/use-comments';
 import { useAuthStore } from '@/lib/stores/use-auth-store';
+import { CommentItem } from '@/components/vehicle/CommentItem';
 
 const COUNTRY_EMOJI: Record<string, string> = {
   JP: '🇯🇵', FR: '🇫🇷', DE: '🇩🇪', IT: '🇮🇹', US: '🇺🇸',
@@ -49,6 +57,15 @@ export default function VehicleDetailScreen() {
     targetId: id,
     targetType: 'vehicle',
   });
+
+  const { isLiked, toggle: toggleLike, isPending: isLikePending } = useLike({
+    targetId: id,
+    targetType: 'vehicle',
+  });
+
+  const [commentsOpen, setCommentsOpen] = useState(false);
+  const [commentBody, setCommentBody] = useState('');
+  const { comments, addComment, isAdding } = useComments(id);
 
   if (isLoading) {
     return (
@@ -132,23 +149,54 @@ export default function VehicleDetailScreen() {
               <ChevronLeft size={18} color="#fff" />
             </Pressable>
             <View style={{ flexDirection: 'row', gap: 8 }}>
-              {[Share2, MoreHorizontal].map((Icon, i) => (
-                <Pressable
-                  key={i}
-                  style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: 19,
-                    backgroundColor: 'rgba(17,17,24,0.72)',
-                    borderWidth: 1,
-                    borderColor: 'rgba(255,255,255,0.08)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Icon size={16} color="#fff" />
-                </Pressable>
-              ))}
+              <Pressable
+                onPress={toggleLike}
+                disabled={isLikePending}
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 19,
+                  backgroundColor: 'rgba(17,17,24,0.72)',
+                  borderWidth: 1,
+                  borderColor: 'rgba(255,255,255,0.08)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Heart
+                  size={16}
+                  color={isLiked ? '#F97316' : '#fff'}
+                  fill={isLiked ? '#F97316' : 'transparent'}
+                />
+              </Pressable>
+              <Pressable
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 19,
+                  backgroundColor: 'rgba(17,17,24,0.72)',
+                  borderWidth: 1,
+                  borderColor: 'rgba(255,255,255,0.08)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Share2 size={16} color="#fff" />
+              </Pressable>
+              <Pressable
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 19,
+                  backgroundColor: 'rgba(17,17,24,0.72)',
+                  borderWidth: 1,
+                  borderColor: 'rgba(255,255,255,0.08)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <MoreHorizontal size={16} color="#fff" />
+              </Pressable>
             </View>
           </View>
 
@@ -268,22 +316,22 @@ export default function VehicleDetailScreen() {
         </View>
       </ScrollView>
 
-      {/* Bouton sticky "Suivre ce véhicule" */}
-      {!isOwnVehicle && (
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            paddingHorizontal: 18,
-            paddingTop: 14,
-            paddingBottom: insets.bottom + 14,
-            backgroundColor: 'rgba(10,10,15,0.95)',
-            flexDirection: 'row',
-            gap: 10,
-          }}
-        >
+      {/* Barre sticky bas — Suivre + Commenter */}
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          paddingHorizontal: 18,
+          paddingTop: 14,
+          paddingBottom: insets.bottom + 14,
+          backgroundColor: 'rgba(10,10,15,0.95)',
+          flexDirection: 'row',
+          gap: 10,
+        }}
+      >
+        {!isOwnVehicle && (
           <KaraButton
             variant={isFollowing ? 'secondary' : 'primary'}
             size="md"
@@ -295,8 +343,134 @@ export default function VehicleDetailScreen() {
               {isFollowing ? '✓ Suivi' : 'Suivre ce véhicule'}
             </Text>
           </KaraButton>
-        </View>
-      )}
+        )}
+        <Pressable
+          onPress={() => setCommentsOpen(true)}
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            backgroundColor: 'rgba(255,255,255,0.08)',
+            borderWidth: 1,
+            borderColor: 'rgba(255,255,255,0.12)',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <MessageCircle size={20} color="#fff" />
+        </Pressable>
+      </View>
+
+      {/* Modal commentaires */}
+      <Modal
+        visible={commentsOpen}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setCommentsOpen(false)}
+      >
+        <KeyboardAvoidingView
+          style={{ flex: 1, backgroundColor: '#0A0A0F' }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          {/* Header */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 16,
+              paddingTop: 16,
+              paddingBottom: 12,
+              borderBottomWidth: 1,
+              borderBottomColor: '#1E1E2E',
+            }}
+          >
+            <Text style={{ color: '#fff', fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18 }}>
+              Commentaires
+            </Text>
+            <Pressable onPress={() => setCommentsOpen(false)}>
+              <Text style={{ color: '#7C3AED', fontFamily: 'Inter_600SemiBold', fontSize: 14 }}>
+                Fermer
+              </Text>
+            </Pressable>
+          </View>
+
+          {/* Liste */}
+          <FlatList
+            data={comments}
+            keyExtractor={(c) => c.id}
+            renderItem={({ item }) => <CommentItem comment={item} />}
+            style={{ flex: 1 }}
+            contentContainerStyle={{ paddingVertical: 8 }}
+            ListEmptyComponent={
+              <Text
+                style={{
+                  color: 'rgba(255,255,255,0.3)',
+                  fontFamily: 'Inter_400Regular',
+                  fontSize: 14,
+                  textAlign: 'center',
+                  marginTop: 40,
+                }}
+              >
+                Aucun commentaire pour l'instant.
+              </Text>
+            }
+          />
+
+          {/* Saisie */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 8,
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              borderTopWidth: 1,
+              borderTopColor: '#1E1E2E',
+            }}
+          >
+            <TextInput
+              value={commentBody}
+              onChangeText={setCommentBody}
+              placeholder="Ajoute un commentaire..."
+              placeholderTextColor="rgba(255,255,255,0.3)"
+              style={{
+                flex: 1,
+                backgroundColor: '#111118',
+                borderRadius: 20,
+                paddingHorizontal: 14,
+                paddingVertical: 10,
+                color: '#fff',
+                fontFamily: 'Inter_400Regular',
+                fontSize: 14,
+                borderWidth: 1,
+                borderColor: '#1E1E2E',
+                maxHeight: 100,
+              }}
+              multiline
+              maxLength={500}
+            />
+            <Pressable
+              onPress={() => {
+                if (!commentBody.trim() || !currentUserId) return;
+                addComment(commentBody);
+                setCommentBody('');
+              }}
+              disabled={!commentBody.trim() || isAdding || !currentUserId}
+              style={{
+                backgroundColor: (commentBody.trim() && currentUserId) ? '#7C3AED' : 'rgba(124,58,237,0.3)',
+                borderRadius: 20,
+                paddingHorizontal: 16,
+                paddingVertical: 10,
+              }}
+            >
+              <Text style={{ color: '#fff', fontFamily: 'Inter_600SemiBold', fontSize: 14 }}>
+                {isAdding ? '…' : 'Envoyer'}
+              </Text>
+            </Pressable>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 }

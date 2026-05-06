@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
   Pressable,
   ScrollView,
   useWindowDimensions,
+  Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -24,6 +25,7 @@ import { KaraButton } from '@/components/shared/KaraButton';
 import { VehiclePhotoCarousel } from './VehiclePhotoCarousel';
 import { VehicleWithRelations } from '@/lib/hooks/use-vehicles';
 import { useFollow } from '@/lib/hooks/use-follow';
+import { useLike } from '@/lib/hooks/use-like';
 import { useAuthStore } from '@/lib/stores/use-auth-store';
 
 // Mapping code pays ISO 3166-1 alpha-2 → emoji drapeau
@@ -46,6 +48,21 @@ export function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelat
   const ownerId = vehicle.profiles?.id ?? vehicle.owner_id;
   const isOwnVehicle = currentUserId === ownerId;
   const { isFollowing, toggle, isPending } = useFollow({ targetId: ownerId, targetType: 'profile' });
+  const { isLiked, likeCount, toggle: toggleLike, isPending: isLikePending } = useLike({
+    targetId: vehicle.id,
+    targetType: 'vehicle',
+  });
+
+  const heartScale = useRef(new Animated.Value(1)).current;
+
+  const handleLike = () => {
+    Animated.sequence([
+      Animated.spring(heartScale, { toValue: 1.3, useNativeDriver: true, speed: 50, bounciness: 12 }),
+      Animated.spring(heartScale, { toValue: 1, useNativeDriver: true, speed: 50, bounciness: 4 }),
+    ]).start();
+    toggleLike();
+  };
+
   // cardWidth = screenWidth - (paddingHorizontal 12 * 2) du Pressable dans index.tsx
   const { width: screenWidth } = useWindowDimensions();
   const cardWidth = screenWidth - 24;
@@ -174,7 +191,7 @@ export function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelat
           ))}
         </View>
 
-        {/* Colonne d'actions droite (style TikTok) — visuels uniquement, logique en Story 5.1 */}
+        {/* Colonne d'actions droite (style TikTok) */}
         <View
           style={{
             position: 'absolute',
@@ -185,7 +202,40 @@ export function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelat
             zIndex: 4,
           }}
         >
-          {[Heart, MessageCircle, Bookmark, Share2].map((Icon, k) => (
+          {/* Bouton ❤️ avec logique likes */}
+          <Pressable
+            onPress={handleLike}
+            disabled={isLikePending}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              backgroundColor: 'rgba(0,0,0,0.45)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Animated.View style={{ transform: [{ scale: heartScale }] }}>
+              <Heart
+                size={20}
+                color={isLiked ? '#F97316' : '#fff'}
+                fill={isLiked ? '#F97316' : 'transparent'}
+              />
+            </Animated.View>
+          </Pressable>
+          {/* Compteur likes dynamique */}
+          <Text
+            style={{
+              fontFamily: 'Inter_500Medium',
+              fontSize: 10,
+              color: 'rgba(255,255,255,0.7)',
+              textAlign: 'center',
+            }}
+          >
+            {likeCount > 0 ? String(likeCount) : ''}
+          </Text>
+          {/* 3 autres icônes (sans logique pour l'instant) */}
+          {[MessageCircle, Bookmark, Share2].map((Icon, k) => (
             <Pressable
               key={k}
               style={{
@@ -200,17 +250,6 @@ export function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelat
               <Icon size={20} color="#fff" />
             </Pressable>
           ))}
-          {/* Compteur likes — 0 jusqu'à Story 5.1 */}
-          <Text
-            style={{
-              fontFamily: 'Inter_500Medium',
-              fontSize: 10,
-              color: 'rgba(255,255,255,0.7)',
-              textAlign: 'center',
-            }}
-          >
-            0
-          </Text>
         </View>
 
         {/* Overlay bas — infos véhicule */}
