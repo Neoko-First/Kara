@@ -314,15 +314,26 @@ function StepDescription() {
 }
 
 function StepLocation() {
-  const city       = usePostStore((s) => s.city);
-  const setCity    = usePostStore((s) => s.setCity);
-  const precise    = usePostStore((s) => s.precise);
-  const setPrecise = usePostStore((s) => s.setPrecise);
-  const photos     = usePostStore((s) => s.photos);
-  const brand      = usePostStore((s) => s.brand);
-  const model      = usePostStore((s) => s.model);
+  const city           = usePostStore((s) => s.city);
+  const setCity        = usePostStore((s) => s.setCity);
+  const precise        = usePostStore((s) => s.precise);
+  const setPrecise     = usePostStore((s) => s.setPrecise);
+  const photos         = usePostStore((s) => s.photos);
+  const brand          = usePostStore((s) => s.brand);
+  const model          = usePostStore((s) => s.model);
+  const year           = usePostStore((s) => s.year);
+  const displacement   = usePostStore((s) => s.displacement);
+  const power          = usePostStore((s) => s.power);
 
   const vehicleName = brand && model ? `${brand} ${model}` : 'Nissan Silvia S15';
+
+  const specParts = [
+    year ? String(year) : null,
+    displacement || null,
+    power ? `${power}CH` : null,
+    city ? city.toUpperCase() : null,
+  ].filter(Boolean);
+  const vehicleSpecs = specParts.length > 0 ? specParts.join(' · ') : '2001 · 2.0T · 280CH · LYON 69';
 
   return (
     <View>
@@ -370,7 +381,7 @@ function StepLocation() {
         )}
         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 14, backgroundColor: 'rgba(10,10,15,0.8)' }}>
           <Text style={{ color: '#fff', fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18 }}>{vehicleName}</Text>
-          <Text style={{ color: '#A78BFA', fontSize: 10, fontFamily: 'Inter_500Medium', letterSpacing: 0.8, marginTop: 2 }}>2001 · 2.0T · 280CH · LYON 69</Text>
+          <Text style={{ color: '#A78BFA', fontSize: 10, fontFamily: 'Inter_500Medium', letterSpacing: 0.8, marginTop: 2 }}>{vehicleSpecs}</Text>
         </View>
       </View>
     </View>
