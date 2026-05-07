@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, ScrollView, Pressable, ActivityIndicator, useWindowDimensions,
-  Modal, TextInput, KeyboardAvoidingView, Platform, FlatList,
+  Modal, TextInput, KeyboardAvoidingView, Platform, FlatList, Share,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +14,7 @@ import {
   Car,
   Bike,
   MessageCircle,
+  Bookmark,
 } from 'lucide-react-native';
 import { KaraBadge } from '@/components/shared/KaraBadge';
 import { KaraTag } from '@/components/shared/KaraTag';
@@ -24,6 +25,7 @@ import { OwnerCard } from '@/components/profile/OwnerCard';
 import { useVehicle } from '@/lib/hooks/use-vehicle';
 import { useFollow } from '@/lib/hooks/use-follow';
 import { useLike } from '@/lib/hooks/use-like';
+import { useBookmark } from '@/lib/hooks/use-bookmark';
 import { useComments } from '@/lib/hooks/use-comments';
 import { useAuthStore } from '@/lib/stores/use-auth-store';
 import { CommentItem } from '@/components/vehicle/CommentItem';
@@ -61,6 +63,10 @@ export default function VehicleDetailScreen() {
   const { isLiked, toggle: toggleLike, isPending: isLikePending } = useLike({
     targetId: id,
     targetType: 'vehicle',
+  });
+
+  const { isBookmarked, toggle: toggleBookmark, isPending: isBookmarkPending } = useBookmark({
+    vehicleId: id,
   });
 
   const [commentsOpen, setCommentsOpen] = useState(false);
@@ -102,6 +108,13 @@ export default function VehicleDetailScreen() {
   const countryEmoji = COUNTRY_EMOJI[data.country_code ?? ''] ?? '';
 
   const photoCount = data.vehicle_photos.length;
+
+  const handleShare = async () => {
+    const ownerUsername = data.profiles?.username ?? '';
+    await Share.share({
+      message: `${displayName} par @${ownerUsername} sur Kara 🔧`,
+    });
+  };
 
   return (
     <View className="flex-1 bg-kara-bg">
@@ -170,6 +183,7 @@ export default function VehicleDetailScreen() {
                 />
               </Pressable>
               <Pressable
+                onPress={handleShare}
                 style={{
                   width: 38,
                   height: 38,
@@ -182,6 +196,26 @@ export default function VehicleDetailScreen() {
                 }}
               >
                 <Share2 size={16} color="#fff" />
+              </Pressable>
+              <Pressable
+                onPress={toggleBookmark}
+                disabled={isBookmarkPending}
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 19,
+                  backgroundColor: 'rgba(17,17,24,0.72)',
+                  borderWidth: 1,
+                  borderColor: 'rgba(255,255,255,0.08)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Bookmark
+                  size={16}
+                  color={isBookmarked ? '#7C3AED' : '#fff'}
+                  fill={isBookmarked ? '#7C3AED' : 'transparent'}
+                />
               </Pressable>
               <Pressable
                 style={{

@@ -6,6 +6,7 @@ import {
   ScrollView,
   useWindowDimensions,
   Animated,
+  Share,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -26,6 +27,7 @@ import { VehiclePhotoCarousel } from './VehiclePhotoCarousel';
 import { VehicleWithRelations } from '@/lib/hooks/use-vehicles';
 import { useFollow } from '@/lib/hooks/use-follow';
 import { useLike } from '@/lib/hooks/use-like';
+import { useBookmark } from '@/lib/hooks/use-bookmark';
 import { useAuthStore } from '@/lib/stores/use-auth-store';
 
 // Mapping code pays ISO 3166-1 alpha-2 → emoji drapeau
@@ -51,6 +53,9 @@ export function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelat
   const { isLiked, likeCount, toggle: toggleLike, isPending: isLikePending } = useLike({
     targetId: vehicle.id,
     targetType: 'vehicle',
+  });
+  const { isBookmarked, toggle: toggleBookmark, isPending: isBookmarkPending } = useBookmark({
+    vehicleId: vehicle.id,
   });
 
   const heartScale = useRef(new Animated.Value(1)).current;
@@ -86,6 +91,12 @@ export function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelat
   const countryEmoji = COUNTRY_EMOJI[vehicle.country_code ?? ''] ?? '';
   const typeLabel = TYPE_LABEL[vehicle.type] ?? vehicle.type;
   const TypeIcon = ['moto', 'bike'].includes(vehicle.type) ? Bike : Car;
+
+  const handleShare = async () => {
+    await Share.share({
+      message: `${displayName} par @${ownerUsername} sur Kara 🔧`,
+    });
+  };
 
   return (
     <Pressable
@@ -234,22 +245,49 @@ export function VehicleCard({ vehicle, cardHeight }: { vehicle: VehicleWithRelat
           >
             {likeCount > 0 ? String(likeCount) : ''}
           </Text>
-          {/* 3 autres icônes (sans logique pour l'instant) */}
-          {[MessageCircle, Bookmark, Share2].map((Icon, k) => (
-            <Pressable
-              key={k}
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
-                backgroundColor: 'rgba(0,0,0,0.45)',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Icon size={20} color="#fff" />
-            </Pressable>
-          ))}
+          <Pressable
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              backgroundColor: 'rgba(0,0,0,0.45)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <MessageCircle size={20} color="#fff" />
+          </Pressable>
+          <Pressable
+            onPress={toggleBookmark}
+            disabled={isBookmarkPending}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              backgroundColor: 'rgba(0,0,0,0.45)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Bookmark
+              size={20}
+              color={isBookmarked ? '#7C3AED' : '#fff'}
+              fill={isBookmarked ? '#7C3AED' : 'transparent'}
+            />
+          </Pressable>
+          <Pressable
+            onPress={handleShare}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              backgroundColor: 'rgba(0,0,0,0.45)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Share2 size={20} color="#fff" />
+          </Pressable>
         </View>
 
         {/* Overlay bas — infos véhicule */}

@@ -3,6 +3,7 @@ import { KaraButton } from "@/components/shared/KaraButton";
 import { KaraPhoto } from "@/components/shared/KaraPhoto";
 import { KaraTag } from "@/components/shared/KaraTag";
 import { useProfile } from "@/lib/hooks/use-profile";
+import { useBookmarks } from "@/lib/hooks/use-bookmarks";
 import { useAuthStore } from "@/lib/stores/use-auth-store";
 import { buildImageUrl } from "@/lib/supabase";
 import { handleSupabaseError } from "@/lib/supabase-error";
@@ -23,6 +24,7 @@ export default function ProfileScreen() {
     const userId = useAuthStore((s) => s.user?.id);
     const signOut = useAuthStore((s) => s.signOut);
     const { data, isLoading, isError, error } = useProfile(userId ?? "");
+    const { data: bookmarkedVehicles = [] } = useBookmarks(userId ?? "");
 
     const handleSignOut = () => {
         Alert.alert("Déconnexion", "Tu veux vraiment te déconnecter ?", [
@@ -244,10 +246,49 @@ export default function ProfileScreen() {
                     </View>
                 )}
 
-                {/* Onglet Favoris — scope Story 5.3 */}
+                {/* Onglet Favoris */}
                 {tab === "favs" && (
-                    <View style={{ alignItems: "center", paddingTop: 40 }}>
-                        <Text style={{ color: "#9594B5", fontFamily: "Inter_400Regular", fontSize: 14 }}>Tes favoris apparaîtront ici</Text>
+                    <View style={{ paddingHorizontal: 20 }}>
+                        {bookmarkedVehicles.length === 0 ? (
+                            <View style={{ alignItems: "center", paddingTop: 40 }}>
+                                <Text style={{ color: "#9594B5", fontFamily: "Inter_400Regular", fontSize: 14 }}>
+                                    Aucun favori pour l'instant
+                                </Text>
+                            </View>
+                        ) : (
+                            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 4 }}>
+                                {bookmarkedVehicles.map((v) => {
+                                    const cover = v.vehicle_photos.find((p) => p.is_cover);
+                                    const imgUrl = cover ? buildImageUrl(cover.storage_path, { width: 300, quality: 75 }) : undefined;
+                                    return (
+                                        <Pressable
+                                            key={v.id}
+                                            onPress={() => router.push(`/vehicle/${v.id}`)}
+                                            style={{ width: "31.5%", aspectRatio: 1, borderRadius: 6, overflow: "hidden", position: "relative" }}
+                                        >
+                                            <KaraPhoto tone="violet-dusk" src={imgUrl} style={{ width: "100%", height: "100%" }} />
+                                            <LinearGradient
+                                                colors={["transparent", "rgba(0,0,0,0.7)"]}
+                                                style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "50%" }}
+                                            />
+                                            <Text
+                                                style={{
+                                                    position: "absolute",
+                                                    bottom: 6,
+                                                    left: 8,
+                                                    color: "#fff",
+                                                    fontSize: 9,
+                                                    fontFamily: "Inter_600SemiBold",
+                                                    letterSpacing: 0.8,
+                                                }}
+                                            >
+                                                {`${v.brand} ${v.model}`.toUpperCase()}
+                                            </Text>
+                                        </Pressable>
+                                    );
+                                })}
+                            </View>
+                        )}
                     </View>
                 )}
             </ScrollView>
